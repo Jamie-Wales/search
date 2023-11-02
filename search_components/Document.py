@@ -11,10 +11,9 @@ class Document:
         self.text_content: Union[str, None] = None
         self.tokenised_content: Union[List[str], None] = None
         try:
-            with open(path, "r+") as f:
+            with open(path, "rb") as f:
                 self.raw_content = BeautifulSoup(f.read(), features="html.parser")
-                self.text_content = self.raw_content.get_text()
-                self.tokenised_content = self.tokenise(self.text_content)
+                self.text_content = self.raw_content.getText(strip=True)
         except FileNotFoundError:
             raise FileNotFoundError(f"The directory {self.path} does not exist")
         except PermissionError:
@@ -26,4 +25,8 @@ class Document:
     def tokenise(document):
         nlp = spacy.load("en_core_web_sm")
         token_doc = nlp(document)
-        return [token.text for token in token_doc]
+        output = []
+        for token in token_doc:
+            if token.text.isalpha():
+                output.append(token)
+        return output

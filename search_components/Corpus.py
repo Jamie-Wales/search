@@ -30,9 +30,6 @@ class CorpusManager:
 
     def __init__(self) -> None:
         self.raw_corpus: Corpus = CorpusFactory().get_raw_corpus()
-        self.tokanised_corpus: Corpus = self.raw_corpus
-        self.lemmatised_corpus: Optional[Corpus] = None
-
     @classmethod
     def get_instance(cls) -> "CorpusManager":
         if cls._instance is None:
