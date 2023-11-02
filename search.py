@@ -1,6 +1,8 @@
-from search_engine import CorpusManager
+from search_components import CorpusManager
+
 manager = CorpusManager()
 
+corp = manager.get_raw_corpus()
 
-for item in manager.raw_corpus.document_list:
-    print(item.text_content)
+for docs in corp.document_list:
+    print(docs.text_content)

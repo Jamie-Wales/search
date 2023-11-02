@@ -1,10 +1,11 @@
 import os
-from typing import List
-from search_engine import Document
+from typing import List, Optional
+
+from search_components import Document
 
 
 class UserInput(object):
-    _instance = None
+    _instance: Optional["UserInput"] = None
 
     def __init__(self):
         self._query = None
@@ -15,13 +16,13 @@ class UserInput(object):
             cls._instance._query = ""
         return cls._instance
 
-    def get_input(self) -> str:
+    def get_input(self) -> Optional[str]:
         return self._query
 
     def set_input(self, user_input: str) -> None:
         self._query = user_input
 
-    def continue_input(self):
+    def continue_input(self) -> bool:
         return self._query != "d"
 
 
