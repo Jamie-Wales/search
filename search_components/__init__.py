@@ -1,2 +1,2 @@
-from .Document import Document
+from .Document import Document, DocumentMetaData
 from .Corpus import CorpusManager

@@ -1,14 +1,10 @@
-from search_components import CorpusManager, Document
+from search_components import CorpusManager, Corpus, Document
 from engine import PostingList
-import pickle
+from utils import check_and_overwrite
 
-file = open("CorpusManager.pkl", "rb")
-manager: CorpusManager = pickle.load(file)
-file.close()
+dm = CorpusManager()
 
-pl = PostingList()
+corpus = dm.get_raw_corpus()
 
-for document in manager.raw_corpus.document_list:
-    for token in document.tokenised_content:
-        pl.add_posting(token, document.path)
 
+## todo: fix world-tour-soccer-2005 meta data not in CSV?

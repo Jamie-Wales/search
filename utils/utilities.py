@@ -25,3 +25,22 @@ class UserInput(object):
     def continue_input(self) -> bool:
         return self._query != "d"
 
+
+def check_and_overwrite(string: str, obj: object):
+    """
+    Checks if a file exists, and prompts the user whether to overwrite it or not.
+    If the user chooses to overwrite or the file doesn't exist, it writes the data to the file.
+    """
+    if os.path.exists(string):
+        response = input(f"'{string}' already exists. Do you want to overwrite it? (yes/no): ").lower()
+
+        if response != 'yes':
+            print("Operation aborted by user.")
+            return
+
+    with open(string, 'wb') as file:
+        import pickle
+        pickle.dump(obj, file)
+        print(f"Data saved to '{string}.")
+
+
