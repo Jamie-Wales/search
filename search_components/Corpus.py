@@ -1,7 +1,7 @@
 from typing import List, Optional, Protocol
 
 from search_components import Document
-from utils import read_content
+
 
 
 # TODO: maybe implement a protocol here a corpus protocol
@@ -18,7 +18,7 @@ class CorpusManager:
     _instance: Optional["CorpusManager"] = None
 
     def __init__(self) -> None:
-        self.raw_corpus: Corpus = Corpus(read_content())
+        self.raw_corpus: Corpus = Parser
 
     @classmethod
     def get_instance(cls) -> "CorpusManager":

@@ -1,9 +1,21 @@
 from typing import List, Dict
 
 
+class DocumentMetaData:
+    esrb: str
+    publisher: str
+    genre: str
+    developer: str
+
+    def __init__(self, esrb, publisher, genre, developer):
+        self.esrb = esrb
+        self.publisher = publisher
+        self.genre = genre
+        self.developer = developer
+
+
 class PostingList:
     document_map: Dict[str, int]
-
     posting: Dict[str, List[str]]
 
     # url,STRING : esrb,STRING : publisher,STRING : genre,STRING : developer

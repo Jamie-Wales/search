@@ -1,35 +1,22 @@
+from dataclasses import dataclass
 from typing import Union, List
 
 from bs4 import BeautifulSoup
-import spacy
+
+
+@dataclass
+class DocumentMetaData:
+    doc_id: int
+    url: str  # Changed from 'path' to 'url'
+    esrb: str
+    publisher: str
+    genre: str
+    developer: str
 
 
 class Document:
-    def __init__(self, path: str) -> None:
-        self.path: str = path
-        self.raw_content: Union[BeautifulSoup, None] = None
-        self.text_content: Union[str, None] = None
+    def __init__(self, raw_content: BeautifulSoup, text_content: str, metadata: DocumentMetaData) -> None:
+        self.raw_content = raw_content
+        self.text_content = text_content
+        self.metadata = metadata
         self.tokenised_content: Union[List[str], None] = None
-        try:
-            with open(path, "rb") as f:
-                self.raw_content = BeautifulSoup(f.read(), features="html.parser")
-                self.text_content = self.raw_content.getText(strip=True)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"The directory {self.path} does not exist")
-        except PermissionError:
-            raise PermissionError(f"Permission denied to access the directory {self.path}")
-        except OSError as e:
-            raise OSError(f"An OS error occurred: {e}")
-
-    @staticmethod
-    def tokenise(document):
-        nlp = spacy.load("en_core_web_sm")
-        token_doc = nlp(document)
-        output = []
-        for token in token_doc:
-            if token.text.isalpha():
-                output.append(str(token))
-        return output
-
-    def generate_tokenised_document(self):
-        self.tokenised_content = Document.tokenise(self.text_content)
