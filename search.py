@@ -1,18 +1,14 @@
 from search_components import CorpusManager, Document
 from engine import PostingList
+import pickle
 
-manager = CorpusManager()
+file = open("CorpusManager.pkl", "rb")
+manager: CorpusManager = pickle.load(file)
+file.close()
 
-corp = manager.get_raw_corpus()
-
-text = corp.document_list
 pl = PostingList()
 
-for document in text:
-    elements = Document.tokenise(document.text_content)
+for document in manager.raw_corpus.document_list:
+    for token in document.tokenised_content:
+        pl.add_posting(token, document.path)
 
-
-for elem in elements:
-
-
-print(pl)

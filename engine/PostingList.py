@@ -1,12 +1,18 @@
-from typing import List
+from typing import List, Dict
 
 
 class PostingList:
-    def __init__(self):
-        self.posting = {str: List[str]}
+    document_map: Dict[str, int]
 
-    def add_posting(self, term, doc_id):
-       self.posting.setdefault(term, [])
-       self.posting[term].append(doc_id)
+    posting: Dict[str, List[str]]
 
-       print(self.posting)
+    # url,STRING : esrb,STRING : publisher,STRING : genre,STRING : developer
+    def __init__(self, path="./dataset/video-game-labels.csv"):
+        self.posting = {}
+        with open(path, mode="r") as f:
+            for line in f.readlines():
+                csv = line.split(",")
+
+    def add_posting(self, term: str, doc_id: str):
+        self.posting.setdefault(term, [])
+        self.posting[term].append(doc_id)

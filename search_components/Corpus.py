@@ -1,9 +1,7 @@
 from typing import List, Optional, Protocol
 
-
 from search_components import Document
 from utils import read_content
-
 
 
 # TODO: maybe implement a protocol here a corpus protocol
@@ -15,21 +13,13 @@ class Corpus:
         self.document_list: List[Document] = documents
 
 
-class CorpusFactory:
-    def __init__(self, raw_corpus=Corpus(read_content())) -> None:
-        self.corpus: Corpus = raw_corpus
-
-    def get_raw_corpus(self) -> Corpus:
-        return self.corpus
-
-
-
 # singleton class to manage different types of corpus
 class CorpusManager:
     _instance: Optional["CorpusManager"] = None
 
     def __init__(self) -> None:
-        self.raw_corpus: Corpus = CorpusFactory().get_raw_corpus()
+        self.raw_corpus: Corpus = Corpus(read_content())
+
     @classmethod
     def get_instance(cls) -> "CorpusManager":
         if cls._instance is None:

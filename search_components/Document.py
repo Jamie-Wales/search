@@ -28,5 +28,8 @@ class Document:
         output = []
         for token in token_doc:
             if token.text.isalpha():
-                output.append(token)
+                output.append(str(token))
         return output
+
+    def generate_tokenised_document(self):
+        self.tokenised_content = Document.tokenise(self.text_content)
