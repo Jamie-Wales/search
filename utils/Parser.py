@@ -1,7 +1,9 @@
 import csv
-from typing import List, Any, Optional
 from abc import ABC, abstractmethod
+from typing import Any, Optional
+
 from bs4 import BeautifulSoup
+
 from search_components import Document, DocumentMetaData
 
 
@@ -60,11 +62,14 @@ class DocumentParser(IParser):
         """
         Reads and parses a document from a given path.
         """
+        from utils import DocumentProcessor
+        doc_processor = DocumentProcessor()
         raw_content, text_content = self._read_html(path)
         doc_metadata = self._read_metadata(self.metadata_parser, path)
+        doc_tokenised = doc_processor.tokenise(text_content)
 
-
-        return Document(raw_content=raw_content, text_content=text_content, metadata=doc_metadata)
+        return Document(raw_content=raw_content, text_content=text_content, metadata=doc_metadata,
+                        tokenised_content=doc_tokenised)
 
     @staticmethod
     def _read_metadata(metadata_parser: MetadataParser, path):

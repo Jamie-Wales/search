@@ -1,30 +1,27 @@
-import spacy
 from typing import List
-from search_components import Document, Corpus
+
+from nltk import word_tokenize
 
 
 class DocumentProcessor:
-    def __init__(self, model: str = "en_core_web_sm"):
-        self.nlp = spacy.load(model)
-
-    def tokenise(self, text: Document) -> List[str]:
+    @staticmethod
+    def tokenise(text: str) -> List[str]:
         """
         Tokenises the input text and returns a list of tokens.
         """
-        token_doc = self.nlp(text.text_content)
-        return [token.text for token in token_doc if token.text.isalpha()]
+        return [token.casefold() for token in word_tokenize(text) if token.isalpha()]
 
-    def lemmatise(self, text: Document) -> List[str]:
+    @staticmethod
+    def stemm(text: str) -> List[str]:
+        from nltk.stem import PorterStemmer
+        ps = PorterStemmer()
+        return [ps.stem(token) for token in word_tokenize(text) if token.isalpha()]
+
+    @staticmethod
+    def lemmatise(text: str) -> List[str]:
         """
         Lemmatises the input text and returns a list of lemmatised tokens.
         """
-        token_doc = self.nlp(text.text_content)
-        return [token.lemma_ for token in token_doc if token.text.isalpha()]
-
-    def processCorpus(self, corpus: Corpus):
-        for document in corpus.documents:
-            document.tokenised_content = self.tokenise(document.text_content)
-
-
-
-
+        from nltk.stem import WordNetLemmatizer
+        lm = WordNetLemmatizer()
+        return [lm.lemmatize(token) for token in word_tokenize(text) if token.text.isalpha()]

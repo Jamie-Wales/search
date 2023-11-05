@@ -1,7 +1,10 @@
 import os
-from typing import List, Optional
+from collections import defaultdict
+from typing import List, Optional, TypeVar, Dict
 
 from search_components import Document
+
+T = TypeVar('T')
 
 
 class UserInput(object):
@@ -39,8 +42,35 @@ def check_and_overwrite(string: str, obj: object):
             return
 
     with open(string, 'wb') as file:
-        import pickle
-        pickle.dump(obj, file)
+        from pickle import dump
+        dump(obj, file)
         print(f"Data saved to '{string}.")
 
 
+def load(path: str):
+    from pickle import load
+    try:
+        with open(path, "rb") as f:
+            obj = load(f)
+            f.close()
+            print(f"Data saved to '{path}.")
+            return obj
+    except FileNotFoundError:
+        print(f"The directory {path} does not exist")
+        return None
+    except PermissionError:
+        raise PermissionError(f"Permission denied to access the directory {path}")
+    except OSError as e:
+        raise OSError(f"An OS error occurred: {e}")
+
+
+def list_factory() -> list:
+    return []
+
+
+def inner_dict_factory() -> Dict[int, List[int]]:
+    return defaultdict(list_factory)
+
+
+def sort_documents(document_a: Document, document_b: Document):
+    return document_a.metadata.doc_id < document_b.metadata.doc_id

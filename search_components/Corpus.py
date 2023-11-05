@@ -1,22 +1,33 @@
 import os
 import pickle
-from utils import check_and_overwrite
-from typing import Optional
+from typing import Optional, List, Dict
 
-from utils import DocumentParser
+from search_components import Document
 
 
-# TODO: maybe implement a protocol here a corpus protocol
-
+# TODO: maybe implement a protocol here a corpus protoco
+# TODO: Clean up Corpus Manager handles generation
 
 # manages individual corpus details
 class Corpus:
+    documents: List[Document]
+    term_frequency: Dict[str, int]
+
     def __init__(self, directory_path: str):
         self.documents = []
+        self.term_frequency = {}
         self.directory_path = directory_path
         self._load_documents()
+        self._calculate_term_frequency()
+
+    def _calculate_term_frequency(self):
+        for document in self.documents:
+            for token in document.tokenised_content:
+                self.term_frequency.setdefault(token, 0)
+                self.term_frequency[token] = self.term_frequency[token] + 1
 
     def _load_documents(self):
+        from utils import DocumentParser
         parser = DocumentParser()
         # Check if directory exists
         if not os.path.exists(self.directory_path):
@@ -36,6 +47,7 @@ class CorpusManager:
     raw_corpus = None
 
     def __init__(self) -> None:
+        from utils import check_and_overwrite
         if os.path.exists("./CorpusManager.pkl"):
             file = open("./CorpusManager.pkl", "rb")
             self.raw_corpus = pickle.load(file).get_raw_corpus()
@@ -52,8 +64,7 @@ class CorpusManager:
     def get_raw_corpus(self) -> Corpus:
         return self.raw_corpus
 
-
-
-
+    def sort_corpus(self):
+        self.raw_corpus.documents.sort(key=lambda document: document.metadata.doc_id, reverse=True)
     # todo: implement different indexing granularity
     # todo: use appropriate index granularity based on corpus type

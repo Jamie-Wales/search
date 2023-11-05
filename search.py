@@ -1,10 +1,13 @@
-from search_components import CorpusManager, Corpus, Document
 from engine import PostingList
-from utils import check_and_overwrite
+from search_components import CorpusManager
+from utils import DocumentProcessor
 
 dm = CorpusManager()
+dm.sort_corpus()
+rc = dm.get_raw_corpus()
+dp = DocumentProcessor()
+pl = PostingList()
+stemmed_pl = None
+pl_stem = PostingList(False)
+pl_lem = PostingList(False)
 
-corpus = dm.get_raw_corpus()
-
-
-## todo: fix world-tour-soccer-2005 meta data not in CSV?
