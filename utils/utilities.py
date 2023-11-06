@@ -1,4 +1,5 @@
 import os
+import pickle
 from collections import defaultdict
 from typing import List, Optional, TypeVar, Dict
 
@@ -22,11 +23,16 @@ class UserInput(object):
     def get_input(self) -> Optional[str]:
         return self._query
 
-    def set_input(self, user_input: str) -> None:
-        self._query = user_input
+    def set_input(self)-> None:
+        self._query = input("Please enter your search query: \n")
 
     def continue_input(self) -> bool:
         return self._query != "d"
+
+    def process_input(self, string_input):
+        from utils import DocumentProcessor
+        dp = DocumentProcessor()
+        return dp.tokenise(string_input)
 
 
 def check_and_overwrite(string: str, obj: object):
@@ -47,21 +53,13 @@ def check_and_overwrite(string: str, obj: object):
         print(f"Data saved to '{string}.")
 
 
-def load(path: str):
-    from pickle import load
+def load(url):
     try:
-        with open(path, "rb") as f:
-            obj = load(f)
-            f.close()
-            print(f"Data saved to '{path}.")
-            return obj
-    except FileNotFoundError:
-        print(f"The directory {path} does not exist")
+        with open(url, 'rb') as f:
+            return pickle.load(f)
+    except (FileNotFoundError, EOFError, pickle.UnpicklingError):
         return None
-    except PermissionError:
-        raise PermissionError(f"Permission denied to access the directory {path}")
-    except OSError as e:
-        raise OSError(f"An OS error occurred: {e}")
+
 
 
 def list_factory() -> list:

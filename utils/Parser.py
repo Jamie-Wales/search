@@ -1,4 +1,5 @@
 import csv
+import string
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
@@ -82,9 +83,13 @@ class DocumentParser(IParser):
         """
         try:
             with open(path, "rb") as f:
+                from utils import DocumentProcessor
+                dp = DocumentProcessor()
                 raw_content = BeautifulSoup(f.read(), features="html.parser")
-                text_content = raw_content.getText(strip=True)
+                # TO DO: s.extract() comments
+                text_content = [dp.stemm(ele.getText()) for ele in raw_content.extract()]
                 return raw_content, text_content
+
         except FileNotFoundError:
             raise FileNotFoundError(f"The directory {path} does not exist")
         except PermissionError:

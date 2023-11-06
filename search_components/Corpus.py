@@ -25,6 +25,8 @@ class Corpus:
             for token in document.tokenised_content:
                 self.term_frequency.setdefault(token, 0)
                 self.term_frequency[token] = self.term_frequency[token] + 1
+        sorted_term_frequency = sorted(self.term_frequency.items(), key=lambda item: item[1])
+        self.term_frequency = dict(sorted_term_frequency)
 
     def _load_documents(self):
         from utils import DocumentParser
@@ -39,6 +41,13 @@ class Corpus:
             if os.path.isfile(filepath):
                 doc = parser.parse(filepath)
                 self.documents.append(doc)
+
+        self.sort_corpus()
+
+    def sort_corpus(self):
+        self.documents.sort(key=lambda document: document.metadata.doc_id, reverse=True)
+    # todo: implement different indexing granularity
+    # todo: use appropriate index granularity based on corpus type
 
 
 # singleton class to manage different types of corpus
@@ -63,8 +72,3 @@ class CorpusManager:
 
     def get_raw_corpus(self) -> Corpus:
         return self.raw_corpus
-
-    def sort_corpus(self):
-        self.raw_corpus.documents.sort(key=lambda document: document.metadata.doc_id, reverse=True)
-    # todo: implement different indexing granularity
-    # todo: use appropriate index granularity based on corpus type

@@ -1,53 +1,44 @@
+import pickle
 from collections import defaultdict
-from typing import List, Dict
-
-from utils import inner_dict_factory, load, check_and_overwrite
-
+from utils import load
+from typing import Dict, List
 
 class PostingList:
-    posting: Dict[str, dict[int, List[int]]]
+    posting: Dict[str, Dict[int, List[int]]]
 
-    # url,STRING : esrb,STRING : publisher,STRING : genre,STRING : developer
     def __init__(self, corpus=True):
-        if corpus:
-            PostingList = load("PostingList.pkl")
-            if PostingList is None:
-                self.posting = defaultdict(inner_dict_factory)
-                from search_components import CorpusManager
-                corp_manager = CorpusManager()
-                corpus = corp_manager.get_raw_corpus()
-                for document in corpus.documents:
-                    for count, token in enumerate(document.tokenised_content):
-                        if document.metadata:
-                            self.add_posting(token, document.metadata.doc_id, count)
+        self.posting = self.load_posting_list("./PostingList.pkl") or defaultdict(lambda: defaultdict(list))
 
-                sorted_posting = {
-                    token: dict(sorted(doc_dict.items(), key=lambda item: item[0]))
-                    for token, doc_dict in sorted(self.posting.items())
-                }
-                self.posting = sorted_posting
-                for token, doc_dict in self.posting.items():
-                    for doc_id, positions in doc_dict.items():
-                        positions.sort()
+        if corpus and not self.posting:
+            from search_components import CorpusManager
+            corp_manager = CorpusManager()
+            corpus = corp_manager.get_raw_corpus()
+            for document in corpus.documents:
+                for count, token in enumerate(document.tokenised_content):
+                    self.add_posting(token, document.metadata.doc_id, count)
 
-                check_and_overwrite("PostingList.pkl", self)
-            else:
-                self.posting = PostingList.posting
+            # Sort posting lists
+            self.sort_posting_list()
+            self.save_posting_list("./PostingList.pkl")
 
-    def add_posting(self, term: str, doc_id: int, count: int):
-        self.posting[term][doc_id].append(count)
+    def add_posting(self, term: str, doc_id: int, position: int):
+        self.posting[term][doc_id].append(position)
 
-    def add_posting_list(self, term: List[str], doc_id: int, lem=False, stem=True):
-        if doc_id is not None:
-            count = 0
-            for terms in term:
-                if stem is True:
-                    pass
-                if lem is True:
-                    pass
+    def sort_posting_list(self):
+        for doc_dict in self.posting.values():
+            for positions in doc_dict.values():
+                positions.sort()
 
-                self.posting[terms][doc_id].append(count)
+    def save_posting_list(self, filepath):
+        with open(filepath, 'wb') as f:
+            pickle.dump(self.posting, f)
 
-    def load_posting_list(self, url):
-        pl = load(url)
-        self.posting = pl.posting
+    def load_posting_list(self, filepath):
+        try:
+            with open(filepath, 'rb') as f:
+                return pickle.load(f)
+        except (FileNotFoundError, EOFError, pickle.UnpicklingError):
+            return None
+
+
+# Helper function for pickling (outside of the class)
