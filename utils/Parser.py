@@ -1,5 +1,4 @@
 import csv
-import string
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
@@ -86,8 +85,12 @@ class DocumentParser(IParser):
                 from utils import DocumentProcessor
                 dp = DocumentProcessor()
                 raw_content = BeautifulSoup(f.read(), features="html.parser")
-                # TO DO: s.extract() comments
-                text_content = [dp.stemm(ele.getText()) for ele in raw_content.extract()]
+                # TO DO: s.extract()  comments
+                text_content = ""
+                for ele in raw_content.find_all():
+                    for string in ele.extract():
+                        text_content += string.getText() + " "
+
                 return raw_content, text_content
 
         except FileNotFoundError:

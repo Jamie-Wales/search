@@ -5,6 +5,7 @@ from typing import Optional, List, Dict
 from search_components import Document
 
 
+
 # TODO: maybe implement a protocol here a corpus protoco
 # TODO: Clean up Corpus Manager handles generation
 
@@ -50,6 +51,8 @@ class Corpus:
     # todo: use appropriate index granularity based on corpus type
 
 
+
+
 # singleton class to manage different types of corpus
 class CorpusManager:
     _instance: Optional["CorpusManager"] = None
@@ -60,10 +63,26 @@ class CorpusManager:
         if os.path.exists("./CorpusManager.pkl"):
             file = open("./CorpusManager.pkl", "rb")
             self.raw_corpus = pickle.load(file).get_raw_corpus()
+            if os.path.exists("./documents.pkl"):
+                file = open("./documents.pkl", "rb")
+                self.raw_corpus.documents = pickle.load(file)
+
         else:
             self.raw_corpus = Corpus("./dataset/videogame/")
             check_and_overwrite("./CorpusManager.pkl", self)
 
+    def __getstate__(self):
+        from utils import check_and_overwrite
+        attributes = self.__dict__.copy()
+        check_and_overwrite("./documents.pkl", attributes["raw_corpus"].documents)
+        return attributes
+
+    def __setstate__(self, state):
+        from utils import load
+        self.__dict__ = state
+
+        file = open("./documents.pkl", "rb")
+        self.__dict__["raw_corpus"].documents = pickle.load(file)
     @classmethod
     def get_instance(cls) -> "CorpusManager":
         if cls._instance is None:
