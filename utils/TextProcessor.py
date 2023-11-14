@@ -2,46 +2,37 @@ import string
 from typing import List
 
 from nltk import word_tokenize
+from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 
 class DocumentProcessor:
+    @staticmethod
+    def remove_punctuation(text: str) -> str:
+        text = text.replace('-', ' ')
+        translator = str.maketrans('', '', string.punctuation)
+        return text.translate(translator)
+
     @staticmethod
     def tokenise(text: str, stem=False, lem=True) -> List[str]:
         """
         Tokenises the input text and returns a list of tokens.
         """
+        text_no_punc = DocumentProcessor.remove_punctuation(text)
+        lowercase_tokens = [token.casefold() for token in word_tokenize(text_no_punc)]
 
-        lowercase_tokens = []
-        if not stem and not lem:
-            lowercase_tokens = [token.casefold() for token in word_tokenize(text) if token.isalpha()]
         if stem:
-            lowercase_tokens = DocumentProcessor.stemm(text)
+            return DocumentProcessor.stemm(lowercase_tokens)
         elif lem:
-            lowercase_tokens = DocumentProcessor.lemmatise(text)
+            return DocumentProcessor.lemmatise(lowercase_tokens)
+
         return lowercase_tokens
 
     @staticmethod
-    def stemm(text: str) -> List[str]:
-        from nltk.stem import PorterStemmer
+    def stemm(tokens: List[str]) -> List[str]:
         ps = PorterStemmer()
-        output = []
-        for token in word_tokenize(text):
-            output.append(ps.stem(token))
-        return output
+        return [ps.stem(token) for token in tokens]
 
     @staticmethod
-    def lemmatise(text: str) -> List[str]:
-        """
-        Lemmatises the input text and returns a list of lemmatised tokens.
-        """
-        from nltk.stem import WordNetLemmatizer
+    def lemmatise(tokens: List[str]) -> List[str]:
         lm = WordNetLemmatizer()
-        output = []
-        for token in word_tokenize(text):
-            if token.isalpha():
-                output.append(lm.lemmatize(token.casefold()))
-        return output
-
-    @staticmethod
-    def punct_remove(text: str):
-        return text.replace(string.punctuation, " ")
+        return [lm.lemmatize(token) for token in tokens]

@@ -1,11 +1,10 @@
 import math
-from typing import Dict
+from typing import Dict, List
 
 import numpy
 
 from engine import PostingList
-from search_components import CorpusManager
-from search_components.Corpus import Corpus
+from search_components import CorpusManager, Corpus
 
 
 class Engine:
@@ -16,18 +15,12 @@ class Engine:
 
     def __init__(self):
         self.corpus = CorpusManager().get_raw_corpus()
-        self.posting_list = PostingList()
         self.query_ranking = {}
         self.idf_ranking = {}
         self.precompute_idf()
         self.vector_space = []
         self._get_vector_space()
         self._vectorise_documents()
-
-    def precompute_idf(self):
-        n_documents = len(self.corpus.documents)
-        for term in self.posting_list.posting.keys():
-            self.idf_ranking[term] = self._idf(term, self.corpus.term_frequency)
 
     def _tf(self, word, document_frequency: dict[str, int]):
         freq = document_frequency.get(word, 0)
@@ -46,37 +39,30 @@ class Engine:
                 count = count + 1
         return count
 
-    def _tf_idf(self, word, document_freq, term_freq):
-        tf = self._tf(word, document_freq)
+    def _query_tf(self, word: str, query_list: List[str]):
+        count = 0
+        for query in query_list:
+            if word is query:
+                count = count + 1
+        return count
+
+    def _tf_idf(self, word, document_freq, term_freq, query=False, query_list=None):
+        if not query:
+            tf = self._tf(word, document_freq)
+        else:
+            tf = self._query_tf(word, query_list)
         idf = self._idf(word, term_freq)
-        return idf * tf
+        return tf * idf
 
-    def update_ranking(self, terms):
-        # Initialize a dictionary to accumulate scores for each document
-        cumulative_scores = {}
+    def update_ranking(self, vec):
+        document_score = []
+        for document in self.corpus.documents:
+            document_score.append((document.metadata, document.vector.raw_vec.dot(vec.raw_vec)))
 
-        # Iterate over each term
-        for term in terms:
-            if term in self.idf_ranking:  # Check if IDF score is precomputed for the term
-                # Calculate TF-IDF score for each document
-                for document in self.corpus.documents:
-                    doc_id = document.metadata.doc_id
-                    score = self._tf_idf(term, document.document_frequency, self.corpus.term_frequency)
-
-                    # If document has already been scored, accumulate the scores
-                    if doc_id not in cumulative_scores:
-                        cumulative_scores[doc_id] = 0
-                    cumulative_scores[doc_id] += score
-
-        # Create a list of (metadata, score) tuples for each document
-        document_scores = [(doc.metadata, cumulative_scores[doc.metadata.doc_id]) for doc in self.corpus.documents if
-                           doc.metadata.doc_id in cumulative_scores]
-
-        # Sort the list of tuples by score in descending order
-        document_scores.sort(key=lambda doc: doc[1], reverse=True)
+        document_score.sort(key=lambda doc: doc[1], reverse=True)
 
         # Return the sorted list of document scores
-        return document_scores
+        return document_score
 
     def _get_vector_space(self):
         for tokens in self.posting_list.posting:
@@ -84,11 +70,41 @@ class Engine:
 
     def _vectorise_documents(self):
         for document in self.corpus.documents:
-            # Initialize an empty list to collect TF-IDF values
-            tf_idf_values = []
-            for token in self.corpus.term_frequency:
-                # Calculate the TF-IDF value for each token and append it to the list
+            # Initialize a numpy array with zeros, the size of the vector space
+            tf_idf_values = numpy.zeros(len(self.vector_space))
+
+            for index, token in enumerate(self.vector_space):
+                # Calculate the TF-IDF value for each token
                 tf_idf_value = self._tf_idf(token, document.document_frequency, self.corpus.term_frequency)
-                tf_idf_values.append(tf_idf_value)
-            # Convert the list of TF-IDF values to a numpy array and assign it to the document vector
-            document.vector.raw_vec = numpy.array(tf_idf_values)
+                # Place the TF-IDF value directly in the numpy array
+                tf_idf_values[index] = tf_idf_value
+
+            # The numpy array is already initialized, no need to convert
+            document.vector.raw_vec = tf_idf_values
+            self.vec_normalise(document.vector)
+
+    def vec_normalise(self, vec):
+        vec.raw_vec = vec.raw_vec / numpy.sqrt(numpy.sum(vec.raw_vec ** 2))
+
+    def vectorize_query(self, query_terms: List[str], vector_space: List[str],
+                        corpus_tf: Dict[str, int]) -> numpy.array:
+        from engine import Vector
+        output = Vector()
+        query_vector = numpy.zeros(len(self.vector_space))
+        for term in query_terms:
+            if term in vector_space:
+                term_index = vector_space.index(term)
+                # tidy this up jamie
+                tf_idf_value = self._tf_idf(term, query_terms, corpus_tf, query_list=query_terms,
+                                            query=True)  # Implement this function
+                query_vector[term_index] = tf_idf_value
+        output.raw_vec = query_vector
+        return output
+
+    def process_query(self, terms: list[str]):
+        vec = self.vectorize_query(terms, self.vector_space, self.corpus.term_frequency)
+        self.vec_normalise(vec)
+        return self.update_ranking(vec)
+
+    def okampi25plus(self, terms: list[str]):
+        terms = self._query_tf(terms)

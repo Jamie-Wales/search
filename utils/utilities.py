@@ -23,7 +23,7 @@ class UserInput(object):
     def get_input(self) -> Optional[str]:
         return self._query
 
-    def set_input(self)-> None:
+    def set_input(self) -> None:
         self._query = input("Please enter your search query: \n")
 
     def continue_input(self) -> bool:
@@ -59,7 +59,6 @@ def load(url):
             return pickle.load(f)
     except (FileNotFoundError, EOFError, pickle.UnpicklingError):
         return None
-
 
 
 def list_factory() -> list:
