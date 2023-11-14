@@ -1,5 +1,6 @@
-from engine import SearchInterface
+from engine import SearchInterface, Engine
 
-si = SearchInterface()
+interf = SearchInterface()
 
-si.search()
+
+interf.search()

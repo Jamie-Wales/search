@@ -17,7 +17,7 @@ class Engine:
         self.corpus = CorpusManager().get_raw_corpus()
         self.query_ranking = {}
         self.idf_ranking = {}
-        self.precompute_idf()
+        self.posting_list = PostingList()
         self.vector_space = []
         self._get_vector_space()
         self._vectorise_documents()
@@ -106,5 +106,16 @@ class Engine:
         self.vec_normalise(vec)
         return self.update_ranking(vec)
 
-    def okampi25plus(self, terms: list[str]):
-        terms = self._query_tf(terms)
+    def okampi25plus(self, word, term_frequency, document_frequency):
+        return ((term_frequency[word] * (1.2 + 1)) / (term_frequency[word] + 1.2) *
+                (1 - 0.75 + 0.75 * (len(document_frequency) / self._avg_doc_length())))
+
+
+    def _avg_doc_length(self):
+        count = 0
+        sum = 0
+        for doc in self.corpus.documents:
+            sum += len(doc.document_frequency)
+            count += 1
+
+        return sum / count

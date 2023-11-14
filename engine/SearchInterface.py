@@ -3,6 +3,8 @@ from utils import UserInput, load, check_and_overwrite
 
 
 class SearchInterface:
+    engine = None
+
     def __init__(self):
         self.engine = load("Engine.pkl")
         if self.engine is None:
