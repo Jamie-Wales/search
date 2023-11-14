@@ -58,25 +58,37 @@ class DocumentParser(IParser):
         else:
             self.metadata_parser = metadata_parser
 
-    def parse(self, path: str) -> Document:
+    def parse(self, path: str, okm25f=False) -> Document:
         """
         Reads and parses a document from a given path.
         """
         from utils import DocumentProcessor
         doc_processor = DocumentProcessor()
-        raw_content, text_content = self._read_html(path)
+        raw_content, text_content = self._read_html(path, okm25f)
         doc_metadata = self._read_metadata(self.metadata_parser, path)
-        doc_tokenised = doc_processor.tokenise(text_content)
-
-        return Document(raw_content=raw_content, text_content=text_content, metadata=doc_metadata,
-                        tokenised_content=doc_tokenised)
+        doc_tokenised_sections = {}
+        doc_tokenised = []
+        if okm25f is True:
+            for element in text_content:
+                for words in doc_processor.tokenise(element[0]):
+                    if words not in doc_tokenised_sections.keys():
+                        doc_tokenised_sections[words] = {}
+                        doc_tokenised_sections[words][element[1]] = 1
+                    else:
+                        doc_tokenised_sections[words][element[1]] += 1
+                    doc_tokenised.append(words)
+            return Document(raw_content, text_content, doc_metadata, doc_tokenised, doc_tokenised_sections)
+        else:
+            doc_tokenised = doc_processor.tokenise(text_content)
+            return Document(raw_content=raw_content, text_content=text_content, metadata=doc_metadata,
+                            tokenised_content=doc_tokenised)
 
     @staticmethod
     def _read_metadata(metadata_parser: MetadataParser, path):
         return metadata_parser.get_metadata_for_document(path)
 
     @staticmethod
-    def _read_html(path: str) -> (BeautifulSoup, str):
+    def _read_html(path: str, okm25f=False) -> (BeautifulSoup, str):
         """
         Reads the content from the given path and returns the raw and text content.
         """
@@ -90,12 +102,18 @@ class DocumentParser(IParser):
 
                 # TO DO: s.extract()  comments
                 text_content = ""
+                output = []
 
-                for ele in raw_content.find_all():
-                    for string in ele.extract():
-                        text_content += string.getText() + " "
-
-                return raw_content, text_content
+                if okm25f is False:
+                    for ele in raw_content.find_all():
+                        for string in ele.extract():
+                            text_content += string.getText()
+                    return raw_content, text_content
+                if okm25f is True:
+                    for ele in raw_content.find_all():
+                        for string in ele.extract():
+                            output.append((string.getText(), ele.name))
+                    return raw_content, output
 
         except FileNotFoundError:
             raise FileNotFoundError(f"The directory {path} does not exist")

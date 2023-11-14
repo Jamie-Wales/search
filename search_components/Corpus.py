@@ -45,7 +45,7 @@ class Corpus:
             filepath = os.path.join(self.directory_path, filename)
             # Check if it's a file (and not a subdirectory)
             if os.path.isfile(filepath):
-                doc = parser.parse(filepath)
+                doc = parser.parse(filepath, okm25f=True)
                 self.documents.append(doc)
 
         self.sort_corpus()

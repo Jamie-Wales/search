@@ -16,7 +16,7 @@ class DocumentMetaData:
 
 class Document:
     def __init__(self, raw_content: BeautifulSoup, text_content: str, metadata: DocumentMetaData,
-                 tokenised_content: List[str]) -> None:
+                 tokenised_content: List[str], doc_tokenised_sections=[]) -> None:
         self.raw_content = raw_content
         from engine import Vector
 
@@ -26,6 +26,7 @@ class Document:
         self.document_frequency: Dict[str, int] = {}
         self._init_doc_frequency()
         self.vector = Vector()
+        self.document_tokenised_sections = doc_tokenised_sections
 
     def _init_doc_frequency(self):
         for tokens in self.tokenised_content:
