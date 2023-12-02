@@ -6,5 +6,6 @@ from search_components import Corpus
 
 class Vector:
     def __init__(self):
-        self.raw_vec = numpy.array(0)
+        self.raw_vec = {}
+        self.intersection = None
 

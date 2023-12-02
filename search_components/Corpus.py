@@ -45,7 +45,7 @@ class Corpus:
             filepath = os.path.join(self.directory_path, filename)
             # Check if it's a file (and not a subdirectory)
             if os.path.isfile(filepath):
-                doc = parser.parse(filepath, okm25f=True)
+                doc = parser.parse(filepath)
                 self.documents.append(doc)
 
         self.sort_corpus()
@@ -55,8 +55,17 @@ class Corpus:
     # todo: implement different indexing granularity
     # todo: use appropriate index granularity based on corpus type
 
+    def _calculate_tags_to_words(self):
+        for documents in self.documents:
+            for items in documents.document_tokenised_sections.keys():
+                if items not in documents.tags_to_words:
+                    documents.tags_to_words[items] = {}
+                for words in documents.document_tokenised_sections[items]:
+                    if words not in documents.tags_to_words[items]:
+                        documents.tags_to_words[items][words] = 0
+                    documents.tags_to_words[items][words] += 1
 
-# singleton class to manage different types of corpus
+
 class CorpusManager:
     _instance: Optional["CorpusManager.pkl"] = None
     raw_corpus = None

@@ -1,6 +1,7 @@
 from engine import SearchInterface, Engine
+from search_components import CorpusManager
 
-interf = SearchInterface()
 
+eng = Engine()
 
-interf.search()
+print(eng.find_most_related_word("super"))
