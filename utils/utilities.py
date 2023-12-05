@@ -1,11 +1,9 @@
 import os
 import pickle
 from collections import defaultdict
-from typing import List, Optional, TypeVar, Dict
+from typing import List, Optional, Dict
 
 from search_components import Document
-
-T = TypeVar('T')
 
 
 class UserInput(object):

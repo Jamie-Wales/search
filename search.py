@@ -2,6 +2,7 @@ from engine import SearchInterface, Engine
 from search_components import CorpusManager
 
 
-eng = Engine()
+corp = CorpusManager()
 
-print(eng.find_most_related_word("super"))
+
+print("jamie")

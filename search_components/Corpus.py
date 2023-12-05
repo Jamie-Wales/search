@@ -1,38 +1,22 @@
 import os
 import pickle
-from typing import Optional, List, Dict
+from typing import Optional, List
 
 from search_components import Document
+from search_components.WordManager import WordManager
 
-
-# TODO: maybe implement a protocol here a corpus protoco
-# TODO: Clean up Corpus Manager handles generation
 
 # manages individual corpus details
 class Corpus:
     documents: List[Document]
-    term_frequency: Dict[str, int]
+    word_manager: WordManager
 
     def __init__(self, directory_path: str):
         self.documents = []
-        self.term_frequency = {}
         self.directory_path = directory_path
         self._load_documents()
-        self._calculate_term_frequency()
-
-    def get_term_list(self):
-        output = []
-        for terms in self.term_frequency.keys():
-            output.append(terms)
-        return output
-
-    def _calculate_term_frequency(self):
-        for document in self.documents:
-            for token in document.tokenised_content:
-                self.term_frequency.setdefault(token, 0)
-                self.term_frequency[token] = self.term_frequency[token] + 1
-        sorted_term_frequency = sorted(self.term_frequency.items(), key=lambda item: item[1])
-        self.term_frequency = dict(sorted_term_frequency)
+        self.word_manager = WordManager()
+        self.word_manager.from_document_managers(self.documents)
 
     def _load_documents(self):
         from utils import DocumentParser
@@ -48,22 +32,11 @@ class Corpus:
                 doc = parser.parse(filepath)
                 self.documents.append(doc)
 
-        self.sort_corpus()
-
     def sort_corpus(self):
         self.documents.sort(key=lambda document: document.metadata.doc_id, reverse=True)
+
     # todo: implement different indexing granularity
     # todo: use appropriate index granularity based on corpus type
-
-    def _calculate_tags_to_words(self):
-        for documents in self.documents:
-            for items in documents.document_tokenised_sections.keys():
-                if items not in documents.tags_to_words:
-                    documents.tags_to_words[items] = {}
-                for words in documents.document_tokenised_sections[items]:
-                    if words not in documents.tags_to_words[items]:
-                        documents.tags_to_words[items][words] = 0
-                    documents.tags_to_words[items][words] += 1
 
 
 class CorpusManager:

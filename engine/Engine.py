@@ -13,7 +13,6 @@ class Engine:
     corpus: Corpus
     posting_list: PostingList
     query_ranking: Dict[int, float]
-    idf_ranking: Dict[str, float]
 
     def __init__(self):
 

@@ -3,8 +3,12 @@ from abc import ABC, abstractmethod
 from typing import Any, Optional
 
 from bs4 import BeautifulSoup, Comment
+from nltk import PorterStemmer
+from nltk import WordNetLemmatizer
 
 from search_components import Document, DocumentMetaData
+from search_components.Word import Word
+from search_components.WordManager import WordManager
 
 
 class IParser(ABC):
@@ -64,38 +68,60 @@ class DocumentParser(IParser):
         """
         from utils import DocumentProcessor
         doc_processor = DocumentProcessor()
-        raw_content, structured_content = self._read_html(path, okm25f)
+        content = self._read_html(path)
         doc_metadata = self._read_metadata(self.metadata_parser, path)
 
         # Initialize a dictionary to hold word counts per tag type
-        tag_word = {}
-        tokenised_content = []
 
-        # Process each tag type, tokenize the text and count the words
-        for content in structured_content:
-            tokens = doc_processor.tokenise(content[0])
-            for token in tokens:
-                tokenised_content.append(token)
-                tag_word[content[1]] = tokens
-        return Document(raw_content, structured_content, doc_metadata, tokenised_content, tag_word)
+        word_manager = WordManager()
+        stemmer = PorterStemmer()
+        lemmer = WordNetLemmatizer()
+        # Process each tag type, tokenize the text and count the word
+        for element in content:
+            tokens = doc_processor.tokenise(element[0])
+            for count, token in enumerate(tokens):
+                word = Word(token, element[1], count, stemmer, lemmer)
+                word_manager.add_word(word)
+        return Document(word_manager, doc_metadata)
 
     @staticmethod
     def _read_metadata(metadata_parser: MetadataParser, path):
         return metadata_parser.get_metadata_for_document(path)
 
     @staticmethod
-    def _read_html(path: str, okm25f=True) -> (BeautifulSoup, str):
+    def get_element_texts(element):
+        output = []
+        # Process 'meta' tags
+        meta_tags = element.find_all("meta")
+        for ele in meta_tags:
+            if ele is not None:
+                content = ele.get('content')  # Safer access to 'content' attribute
+                output.append((content, ["meta"]))
+
+        # Process 'div' elements
+        divs = element.find("div", id="content")
+        for child in divs.findChildren():
+            if child is not None:
+                class_attr = child.get('class')  # Safer access to 'class' attribute
+                if class_attr is not None:
+                    output.append((child.get_text(), class_attr))
+                else:
+                    output.append((child.get_text(), ["div"]))
+            else:
+                output.append((child, ["div"]))
+
+        return output
+
+    @staticmethod
+    def _read_html(path: str):
         """
         Reads the content from the given path and returns the raw and text content.
         """
         try:
             with open(path, "rb") as f:
-                from utils import DocumentProcessor
-                dp = DocumentProcessor()
                 raw_content = BeautifulSoup(f.read(), features="html.parser")
                 for ele in raw_content(["script", "img", "style", "a"]):
                     ele.extract()
-
 
                 for comment in raw_content.find_all(string=lambda text: isinstance(text, Comment)):
                     comment.extract()
@@ -109,19 +135,8 @@ class DocumentParser(IParser):
                 for ele in raw_content.select("#headerSearch"):
                     ele.extract()
 
-
-                text_content = ""
-                output = []
-
-                if okm25f is False:
-                    for ele in raw_content.select("#content") + " " + raw_content.find_all("title"):
-                        text_content += ele.getText() + " "
-                    return raw_content, text_content.strip()
-
-                if okm25f is True:
-                    for ele in raw_content.find_all():
-                        output.append((ele.getText(), ele.name))
-                    return raw_content, output
+                output = DocumentParser.get_element_texts(raw_content)
+                return output
 
         except FileNotFoundError:
             raise FileNotFoundError(f"The directory {path} does not exist")
