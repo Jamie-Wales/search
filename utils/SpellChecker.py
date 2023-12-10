@@ -31,7 +31,6 @@ class SpellChecker:
         return closest_word, min_distance
 
     def edit_distance(self, s1: str, s2: str) -> int:
-        # ... (same as your current edit_distance method) ...    def edit_distance(self, s1: str, s2: str) -> int:
         s1 = ' ' + s1
         s2 = ' ' + s2
 

@@ -75,12 +75,12 @@ class DocumentParser(IParser):
 
         word_manager = WordManager()
         stemmer = PorterStemmer()
-        lemmer = WordNetLemmatizer()
+        lemmar = WordNetLemmatizer()
         # Process each tag type, tokenize the text and count the word
         for element in content:
             tokens = doc_processor.tokenise(element[0])
             for count, token in enumerate(tokens):
-                word = Word(token, element[1], count, stemmer, lemmer)
+                word = Word(token, element[1], count, stemmer, lemmar)
                 word_manager.add_word(word)
         return Document(word_manager, doc_metadata)
 
@@ -91,14 +91,14 @@ class DocumentParser(IParser):
     @staticmethod
     def get_element_texts(element):
         output = []
-        # Process 'meta' tags
+        # Process meta tags
         meta_tags = element.find_all("meta")
         for ele in meta_tags:
             if ele is not None:
                 content = ele.get('content')  # Safer access to 'content' attribute
                 output.append((content, ["meta"]))
 
-        # Process 'div' elements
+        # Process div elements
         divs = element.find("div", id="content")
         for child in divs.findChildren():
             if child is not None:

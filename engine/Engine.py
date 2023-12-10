@@ -3,7 +3,6 @@ from typing import Dict, List
 
 import numpy
 
-from engine import PostingList
 from search_components import CorpusManager, Corpus
 from utils import DocumentProcessor
 
@@ -11,16 +10,11 @@ from utils import DocumentProcessor
 class Engine:
     doc_length: float
     corpus: Corpus
-    posting_list: PostingList
     query_ranking: Dict[int, float]
 
     def __init__(self):
 
         self.corpus = CorpusManager().get_raw_corpus()
-        self.query_ranking = {}
-        self.idf_ranking = {}
-        self.corpus._calculate_tags_to_words()
-        self.posting_list = PostingList()
         self.vector_space = []
         self.doc_length = self._avg_doc_length()
         self._get_vector_space()
@@ -74,7 +68,7 @@ class Engine:
         return document_score
 
     def _get_vector_space(self):
-        for tokens in self.posting_list.posting:
+        for tokens in self.corpus.word_manager.words:
             self.vector_space.append(tokens)
 
     def _vectorise_documents(self, bm25f=True):

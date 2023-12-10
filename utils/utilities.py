@@ -1,9 +1,15 @@
 import os
 import pickle
+import sys
 from collections import defaultdict
 from typing import List, Optional, Dict
 
+from nltk import PorterStemmer, WordNetLemmatizer
+
+from engine.Vector import QueryVector
 from search_components import Document
+from search_components.Word import QueryWord
+from search_components.WordManager import QueryManager
 
 
 class UserInput(object):
@@ -18,19 +24,27 @@ class UserInput(object):
             cls._instance._query = ""
         return cls._instance
 
-    def get_input(self) -> Optional[str]:
-        return self._query
+    def get_input(self, corpus_word_manager) -> QueryVector:
+        return self.process_input(corpus_word_manager)
 
     def set_input(self) -> None:
         self._query = input("Please enter your search query: \n")
+        if self._query == "d":
+            sys.exit(0)
 
-    def continue_input(self) -> bool:
-        return self._query != "d"
-
-    def process_input(self, string_input):
+    def process_input(self, corpus_word_manager) -> QueryVector:
         from utils import DocumentProcessor
         dp = DocumentProcessor()
-        return dp.tokenise(string_input)
+        tokens = dp.tokenise(self._query)
+        stemmer = PorterStemmer()
+        lemmar = WordNetLemmatizer()
+        query_word_manager = QueryManager()
+        for token in tokens:
+            word = QueryWord(token, stemmer, lemmar)
+            query_word_manager.add_word(word)
+
+        vec = QueryVector(corpus_word_manager, query_word_manager)
+        return vec
 
 
 def check_and_overwrite(string: str, obj: object):

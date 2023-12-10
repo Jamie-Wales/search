@@ -1,8 +1,6 @@
-from engine import SearchInterface, Engine
+from engine import SearchInterface, Engine, TFIDFVector, TFIDFFieldVector
+from engine.Search import Search
 from search_components import CorpusManager
 
 
-corp = CorpusManager()
-
-
-print("jamie")
+eng = Search().search()

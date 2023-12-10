@@ -3,19 +3,19 @@ import pickle
 from typing import Optional, List
 
 from search_components import Document
-from search_components.WordManager import WordManager
+from search_components.WordManager import CorpusWordManager
 
 
 # manages individual corpus details
 class Corpus:
     documents: List[Document]
-    word_manager: WordManager
+    word_manager: CorpusWordManager
 
     def __init__(self, directory_path: str):
         self.documents = []
         self.directory_path = directory_path
         self._load_documents()
-        self.word_manager = WordManager()
+        self.word_manager = CorpusWordManager()
         self.word_manager.from_document_managers(self.documents)
 
     def _load_documents(self):
@@ -31,13 +31,13 @@ class Corpus:
             if os.path.isfile(filepath):
                 doc = parser.parse(filepath)
                 self.documents.append(doc)
+        self.sort_corpus()
 
     def sort_corpus(self):
         self.documents.sort(key=lambda document: document.metadata.doc_id, reverse=True)
 
-    # todo: implement different indexing granularity
-    # todo: use appropriate index granularity based on corpus type
-
+    def get_document_by_id(self, id: int) -> Optional[Document]:
+        return self.documents[id]
 
 class CorpusManager:
     _instance: Optional["CorpusManager.pkl"] = None

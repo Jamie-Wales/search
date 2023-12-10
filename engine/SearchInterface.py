@@ -17,7 +17,7 @@ class SearchInterface:
             self.input.set_input()
             raw_input = self.input.get_input()
             from utils import SpellChecker
-            processed_input = self.input.process_input(raw_input)
+            processed_input = process_input(raw_input)
             sp = SpellChecker(processed_input, self.engine.corpus.term_frequency)
             ranking = self.engine.process_query(sp.correct_words())
             self.print_ranking(ranking)
