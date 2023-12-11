@@ -24,15 +24,16 @@ class UserInput(object):
             cls._instance._query = ""
         return cls._instance
 
-    def get_input(self, corpus_word_manager) -> QueryVector:
-        return self.process_input(corpus_word_manager)
+    def get_input(self, corpus_word_manager, vector_space) -> QueryVector:
+        vec = self.process_input(corpus_word_manager, vector_space)
+        return vec
 
-    def set_input(self) -> None:
-        self._query = input("Please enter your search query: \n")
+    def set_input(self, input: str) -> None:
+        self._query = input
         if self._query == "d":
             sys.exit(0)
 
-    def process_input(self, corpus_word_manager) -> QueryVector:
+    def process_input(self, corpus_word_manager, vector_space) -> QueryVector:
         from utils import DocumentProcessor
         dp = DocumentProcessor()
         tokens = dp.tokenise(self._query)
@@ -43,7 +44,7 @@ class UserInput(object):
             word = QueryWord(token, stemmer, lemmar)
             query_word_manager.add_word(word)
 
-        vec = QueryVector(corpus_word_manager, query_word_manager)
+        vec = QueryVector(corpus_word_manager, query_word_manager, "query", vector_space)
         return vec
 
 

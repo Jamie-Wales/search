@@ -70,9 +70,6 @@ class DocumentParser(IParser):
         doc_processor = DocumentProcessor()
         content = self._read_html(path)
         doc_metadata = self._read_metadata(self.metadata_parser, path)
-
-        # Initialize a dictionary to hold word counts per tag type
-
         word_manager = WordManager()
         stemmer = PorterStemmer()
         lemmar = WordNetLemmatizer()
@@ -108,7 +105,7 @@ class DocumentParser(IParser):
                 else:
                     output.append((child.get_text(), ["div"]))
             else:
-                output.append((child, ["div"]))
+                output.append((divs.get_text(),  ["div"]))
 
         return output
 

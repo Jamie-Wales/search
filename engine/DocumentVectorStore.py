@@ -1,3 +1,5 @@
+from concurrent.futures import ThreadPoolExecutor
+
 from engine import Vector, TFIDFVector, TFIDFFieldVector
 from utils import load, check_and_overwrite
 
@@ -32,8 +34,8 @@ class DocumentVectorStore:
         Generates vectors for a given document and stores them in the document_vectors dictionary.
         """
         for document in corpus.documents:
-            tfidf_vector = TFIDFVector(corpus.word_manager, document.word_manager, document.metadata.doc_id)
-            tfidfField_vector = TFIDFFieldVector(corpus.word_manager, document.word_manager, document.metadata.doc_id)
+            tfidf_vector = TFIDFVector(corpus.word_manager, document.word_manager, document.metadata, corpus.vector_space)
+            tfidfField_vector = TFIDFFieldVector(corpus.word_manager, document.word_manager, document.metadata, corpus.vector_space)
             vector_store = VectorStore(tfidf_vector, tfidfField_vector)
             self.document_vectors[document.metadata.doc_id] = vector_store
 

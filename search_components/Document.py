@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from search_components.WordManager import WordManager
+from search_components import WordManager
 
 
 @dataclass

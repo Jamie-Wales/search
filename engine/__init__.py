@@ -1,4 +1,5 @@
 from .PostingList import PostingList
-from .Engine import Engine
-from .SearchInterface import SearchInterface
-from .Vector import TFIDFVector, TFIDFFieldVector, BM25plusVector, BM25plusFieldVector
+from .Vector import TFIDFVector, TFIDFFieldVector, BM25plusVector, BM25plusFieldVector, QueryVector
+from .Ranker import Ranker
+from .DocumentVectorStore import DocumentVectorStore
+from .Search import Search

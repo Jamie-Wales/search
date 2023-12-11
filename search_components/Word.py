@@ -1,29 +1,24 @@
-from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk import PorterStemmer, WordNetLemmatizer
 
 
 class Word:
     def __init__(self, word: str, tag: str, position: int, stemmer: PorterStemmer, lemmer: WordNetLemmatizer):
         self.original = word
-        self.stemmed = self.stem_word(word, stemmer)
-        self.lemmatized = self.lemmatize_word(word, lemmer)
+        self.stemmed = None
+        self.lemmatized = None
         self.tag = tag
         self.position = position
+        self.stem_word(word, stemmer)
+        self.lemmatize_word(word, lemmer)
 
-    @staticmethod
-    def stem_word(word: str, stemmer: PorterStemmer) -> str:
-        return stemmer.stem(word)
+    def stem_word(self, word: str, stemmer: PorterStemmer):
+        self.stemmed = stemmer.stem(word)
 
-    @staticmethod
-    def lemmatize_word(word: str, lemmar: WordNetLemmatizer) -> str:
-        return lemmar.lemmatize(word)
+    def lemmatize_word(self, word: str, lemmer: WordNetLemmatizer):
+        self.lemmatized = lemmer.lemmatize(word)
 
     def get(self, type: str):
-        if type is "stemmed":
-            return self.stemmed
-        if type is "lemmatized":
-            return self.lemmatized
-        if type is "original":
-            return self.original
+        return self.__getattribute__(f"{type}")
 
 
 class QueryWord:

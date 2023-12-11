@@ -1,9 +1,10 @@
+from threading import Thread
 from typing import Dict, List, Tuple
-
-from search_components.Word import Word, QueryWord
-
+from search_components.Word import QueryWord
+from search_components.Word import Word
 
 class WordManager:
+
     def __init__(self):
         self.words_by_tag: Dict[str, Dict[str, Dict[str, int]]] = {}
         self.words: Dict[str, Dict[str, Word]] = {
@@ -40,7 +41,7 @@ class WordManager:
 
     def get_word_count(self, word_type: str, word_form: str) -> int:
         total = 0
-        for count in self.words_by_tag.get(word_type).get(word_form, {"": 0}).values():
+        for count in self.words_by_tag.get(word_type).get(word_form).values():
             total += count
 
         return total
@@ -53,6 +54,7 @@ class CorpusWordManager(WordManager):
         self.number_of_documents = 0
 
     def from_document_managers(self, doc_managers_list):
+        threads = []
         for document in doc_managers_list:
             self.number_of_documents += 1
             for word in document.word_manager.words['original'].values():
