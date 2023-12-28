@@ -74,7 +74,9 @@ class Vector(ABC):
         data = self.__getattribute__(f"{word_type}_data")
         for index, word in enumerate(data.intersection):
             tf = self._tf(word_type, word)
+            assert (tf >= 0)
             idf = self._idf(word_type, word)
+            assert (idf >= 0)
             data.value[index] = tf * idf
 
     @abstractmethod
@@ -105,6 +107,7 @@ class Vector(ABC):
         if norm > 0:
             for value in vec:
                 value /= norm
+                assert (value >= 0)
                 output.append(value)
         return output
 
@@ -117,14 +120,26 @@ class TFIDFVector(Vector):
     @override
     def _tf(self, word_type: str, word: str) -> float:
         frequency = self.word_manager.get_word_count(word_type, word)
-        return 1 + math.log(frequency) if frequency > 0 else 0
+        if frequency == 0:
+            return 0
+        else:
+            return math.log(frequency) + 1
 
     @override
     def _idf(self, word_type: str, word: str) -> float:
-        # Specific IDF implementation for TFIDFVector
-        return math.log(
-            self.corpus_word_manager.number_of_documents /
-            self.corpus_word_manager.n_doc_count.get(word_type).get(word, 1))
+        # Retrieve the number of documents and document frequency of the word
+        num_documents = self.corpus_word_manager.number_of_documents
+        doc_frequency = self.corpus_word_manager.count[word_type].get(word, 0)
+        if doc_frequency == 0:
+            raise ValueError
+
+        idf = math.log(num_documents / doc_frequency)
+
+        # Print for debugging
+        print(
+            f"Calculating IDF for word '{word}' (type: {word_type}): num_documents = {num_documents}, doc_frequency = {doc_frequency}, idf = {idf}")
+
+        return idf
 
 
 class TFIDFFieldVector(TFIDFVector):
@@ -146,6 +161,8 @@ class TFIDFFieldVector(TFIDFVector):
             'gameBioSysReq': 1.25,
             'gameBioSysReqTitle': 0.5,
             'div': 1,
+            'i': 0.75,
+            'b': 1.25,
         }
 
         for tag in tags:

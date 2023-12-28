@@ -2,7 +2,7 @@ import csv
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
-from bs4 import BeautifulSoup, Comment
+from bs4 import BeautifulSoup, Comment, NavigableString
 from nltk import PorterStemmer
 from nltk import WordNetLemmatizer
 
@@ -34,10 +34,10 @@ class MetadataParser(IParser):
     def __init__(self, csv_path: str = "./dataset/video-game-labels.csv"):
         self.metadata_dict = self.parse(csv_path)
 
-    def parse(self, csv_path: str) -> dict:
+    def parse(self, data: str) -> dict:
         metadata_dict = dict()
         doc_id = 0
-        with open(csv_path, "r+") as f:
+        with open(data, "r+") as f:
             reader = csv.reader(f)
             for row in reader:
                 doc_url, esrb, publisher, genre, developer = row
@@ -85,27 +85,48 @@ class DocumentParser(IParser):
     def _read_metadata(metadata_parser: MetadataParser, path):
         return metadata_parser.get_metadata_for_document(path)
 
+
     @staticmethod
     def get_element_texts(element):
         output = []
+
         # Process meta tags
         meta_tags = element.find_all("meta")
         for ele in meta_tags:
             if ele is not None:
-                content = ele.get('content')  # Safer access to 'content' attribute
+                content = ele.get('content')
                 output.append((content, ["meta"]))
 
-        # Process div elements
-        divs = element.find("div", id="content")
-        for child in divs.findChildren():
-            if child is not None:
-                class_attr = child.get('class')  # Safer access to 'class' attribute
-                if class_attr is not None:
-                    output.append((child.get_text(), class_attr))
-                else:
-                    output.append((child.get_text(), ["div"]))
-            else:
-                output.append((divs.get_text(),  ["div"]))
+        # Process div elements with id="content" and their children
+        divs = element.find_all("div", id="content")
+        for div in divs:
+            # Process the div itself, extracting direct text
+            div_class = div.get('class') or ["div"]
+            div_text = ''.join(child.string for child in div if isinstance(child, NavigableString))
+            if div_text:
+                output.append((div_text, div_class))
+
+            # Recursively process each child within the div
+            for child in div.findChildren(recursive=False):
+                output.extend(DocumentParser.process_children(child))
+
+        return output
+
+    @staticmethod
+    def process_children(element):
+        # This function processes an element and its children recursively
+        output = []
+        children = element.findChildren(recursive=False)
+
+        if not children:
+            # If there are no children, this is a leaf node, so capture its text
+            element_class = element.get('class') or [element.name]
+            element_text = element.get_text(separator=' ')
+            output.append((element_text, element_class))
+        else:
+            # If there are children, process each of them
+            for child in children:
+                output.extend(DocumentParser.process_children(child))
 
         return output
 

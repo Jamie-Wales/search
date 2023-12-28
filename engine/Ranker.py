@@ -1,16 +1,28 @@
+import heapq
+
 from engine import DocumentVectorStore
 from engine import QueryVector
 
 
 class Ranker:
-    def __init__(self):
-        self.tf_idf_vectors = {"lemmatized": [], "stemmed": [], "original": []}
+    docs = []
 
-    def tf_idf_vector(self, vector_store: DocumentVectorStore, query_vec: QueryVector):
-        for vec in vector_store.document_vectors.items():
-            self.tf_idf_vectors["lemmatized"].append((vec[1].TFIDFVector.dot_product(query_vec, "lemmatized"), vec[0]))
-            self.tf_idf_vectors["stemmed"].append((vec[1].TFIDFVector.dot_product(query_vec, "stemmed"), vec[0]))
-            self.tf_idf_vectors["original"].append((vec[1].TFIDFVector.dot_product(query_vec, "original"), vec[0]))
+    def tf_idf_vector(self, vec_type: str, vector_store: DocumentVectorStore, query_vec: QueryVector):
+        heap = []
 
-    def tf_idf_documents(self, type):
-        self.tf_idf_vectors[type].sort(key=lambda x: x[0], reverse=True)
+        # Iterate through all document vectors, use enumerate to get an index
+        for index, vec in enumerate(vector_store.document_vectors):
+            score = vec.TFIDFVector.dot_product(query_vec, vec_type)
+
+            # Push a tuple of (score, index, metadata) onto the heap
+            if score > 0:
+                heapq.heappush(heap, (score, index, vec.TFIDFVector.metadata))
+
+            # If the heap size exceeds 10, remove the smallest element
+            if len(heap) > 10:
+                heapq.heappop(heap)
+
+        # Convert heap to a list and sort in descending order
+        # Using only score and metadata for the final output
+        self.docs = sorted([(score, metadata) for score, _, metadata in heap], key=lambda x: x[0], reverse=True)
+        return self.docs

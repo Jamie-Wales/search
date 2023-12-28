@@ -22,17 +22,21 @@ class Word:
 
 
 class QueryWord:
-    def __init__(self, word: str, stemmer: PorterStemmer, lemmer: WordNetLemmatizer):
+    def __init__(self, word: str, stemmer: PorterStemmer = None, lemmer: WordNetLemmatizer = None):
         self.original = word
         self.stemmed = self.stem_word(word, stemmer)
         self.lemmatized = self.lemmatize_word(word, lemmer)
 
     @staticmethod
     def stem_word(word: str, stemmer: PorterStemmer) -> str:
+        if stemmer is None:
+            stemmer = PorterStemmer()
         return stemmer.stem(word)
 
     @staticmethod
     def lemmatize_word(word: str, lemmar: WordNetLemmatizer) -> str:
+        if lemmar is None:
+            lemmar = WordNetLemmatizer()
         return lemmar.lemmatize(word)
 
     def get(self, type: str):

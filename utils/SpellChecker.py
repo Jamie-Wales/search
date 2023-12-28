@@ -1,36 +1,49 @@
-from typing import List, Tuple
-
 import numpy as np
+
+from engine import QueryVector
+from engine.VectorSpace import VectorSpace
+from search_components.Word import Word, QueryWord
+from search_components.WordManager import QueryManager, CorpusWordManager
 
 
 class SpellChecker:
-    def __init__(self, input: List[str], posting_list: dict[str, List[int]]):
-        self.posting_list = posting_list
+    def __init__(self, input: QueryManager, corpus_word_manager: CorpusWordManager, vector_space: VectorSpace):
         self.input = input
+        self.corpus_word_manager = corpus_word_manager
+        self.vector_space = vector_space
+        self.corrected_vector = None
+        self.corrected_words = {}
 
-    def correct_words(self) -> list[str]:
-        output = []
-        for word in self.input:
-            if word not in self.posting_list:
-                closest_word, min_distance = self.find_closest_word_in_postings(word)
+    def correct_words(self) -> QueryVector | bool:
+        self.corrected_words.clear()
+        for word in self.input.words["original"].keys():
+            if word not in self.corpus_word_manager.words["original"].keys():
+                closest_word, min_distance = self.find_closest_word_in_wm(word)
                 if min_distance < 3:
-                    print(f"Spellchecking: Changing {word} for {closest_word}")
-                    output.append(closest_word)
+                    print(f"changing {word} to {closest_word.original}")
+                    self.corrected_words[word] = closest_word
+        new_word_manager = QueryManager()
+        for word in self.input.words.keys():
+            if word in self.corrected_words:
+                new_word_manager.add_word(self.corrected_words.get(word))
             else:
-                output.append(word)
-        return output
+                new_word_manager.add_word(QueryWord(word))
 
-    def find_closest_word_in_postings(self, input_word: str) -> Tuple[str, int]:
+        if len(self.corrected_words) > 0:
+            self.corrected_vector = QueryVector(self.corpus_word_manager, new_word_manager, "", self.vector_space)
+
+    def find_closest_word_in_wm(self, input_word: str) -> tuple[Word | str, float | int]:
         min_distance = float('inf')
         closest_word = input_word
-        for word in self.posting_list:
-            distance = self.edit_distance(input_word, word)
+        for word in self.corpus_word_manager.words["original"].values():
+            distance = self.edit_distance(input_word, word.original)
             if distance < min_distance:
                 min_distance = distance
                 closest_word = word
         return closest_word, min_distance
 
-    def edit_distance(self, s1: str, s2: str) -> int:
+    @staticmethod
+    def edit_distance(s1: str, s2: str) -> int:
         s1 = ' ' + s1
         s2 = ' ' + s2
 
@@ -42,8 +55,18 @@ class SpellChecker:
             m[0][j] = j
 
         for i in range(1, len(s1)):
+            min_value_in_row = float('inf')
             for j in range(1, len(s2)):
                 offset = 0 if s1[i] == s2[j] else 1
                 m[i][j] = min(m[i - 1][j - 1] + offset, m[i - 1][j] + 1, m[i][j - 1] + 1)
+                min_value_in_row = min(min_value_in_row, m[i][j])
+
+            # Early exit if the edit distance is already above 2
+            if min_value_in_row > 2:
+                return 3  # Return 3 indicating edit distance > 2
+
+        # Check the last row's minimum value
+        if min(m[-1]) > 2:
+            return 3  # Return 3 indicating edit distance > 2
 
         return int(m[len(s1) - 1][len(s2) - 1])

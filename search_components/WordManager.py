@@ -1,7 +1,8 @@
-from threading import Thread
 from typing import Dict, List, Tuple
+
 from search_components.Word import QueryWord
 from search_components.Word import Word
+
 
 class WordManager:
 
@@ -48,23 +49,29 @@ class WordManager:
 
 
 class CorpusWordManager(WordManager):
-    def __init__(self):
+    def __init__(self, document_list):
         super().__init__()
-        self.n_doc_count = {"original": {}, "stemmed": {}, "lemmatized": {}}
+        self.count = {"original": {}, "stemmed": {}, "lemmatized": {}}
         self.number_of_documents = 0
+        self.from_document_managers(document_list)
 
     def from_document_managers(self, doc_managers_list):
-        threads = []
         for document in doc_managers_list:
             self.number_of_documents += 1
-            for word in document.word_manager.words['original'].values():
+            seen = {"original": set(), "stemmed": set(), "lemmatized": set()}
+
+            for word in document.word_manager.words["original"].values():
                 self.add_word(word)
-                self.n_doc_count["lemmatized"].setdefault(word.lemmatized, 0)
-                self.n_doc_count["lemmatized"][word.lemmatized] += 1
-                self.n_doc_count["stemmed"].setdefault(word.stemmed, 0)
-                self.n_doc_count["stemmed"][word.stemmed] += 1
-                self.n_doc_count["original"].setdefault(word.original, 0)
-                self.n_doc_count["original"][word.original] += 1
+                # Mark the word as seen in this document
+                seen["original"].add(word.original)
+                seen["stemmed"].add(word.stemmed)
+                seen["lemmatized"].add(word.lemmatized)
+
+            # Update document counts for each word type
+            for word_type in ["original", "stemmed", "lemmatized"]:
+                for word in seen[word_type]:
+                    self.count[word_type][word] = self.count[word_type].get(word, 0) + 1
+
 
 
 class QueryManager:
@@ -90,7 +97,5 @@ class QueryManager:
             # Increment the count
             self.words[word_type][word_form] += 1
 
-    def get_word_count(self, word_type: str, word_form: str) -> int:
-        return self.words.get(word_type).get(word_form, 0)
-
-
+    def get_word_count(self, word_type: str, word: str) -> int:
+        return self.words.get(word_type).get(word, 0)
