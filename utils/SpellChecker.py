@@ -7,23 +7,23 @@ from search_components.WordManager import QueryManager, CorpusWordManager
 
 
 class SpellChecker:
-    def __init__(self, input: QueryManager, corpus_word_manager: CorpusWordManager, vector_space: VectorSpace):
-        self.input = input
+    def __init__(self, corpus_word_manager: CorpusWordManager, vector_space: VectorSpace):
         self.corpus_word_manager = corpus_word_manager
         self.vector_space = vector_space
-        self.corrected_vector = None
         self.corrected_words = {}
+        self.corrected_vector = None
 
-    def correct_words(self) -> QueryVector | bool:
+    def correct_words(self, input: QueryManager) -> None:
         self.corrected_words.clear()
-        for word in self.input.words["original"].keys():
+        self.corrected_vector = None
+        for word in input.words["original"].keys():
             if word not in self.corpus_word_manager.words["original"].keys():
                 closest_word, min_distance = self.find_closest_word_in_wm(word)
                 if min_distance < 3:
                     print(f"changing {word} to {closest_word.original}")
                     self.corrected_words[word] = closest_word
         new_word_manager = QueryManager()
-        for word in self.input.words.keys():
+        for word in input.words["original"].keys():
             if word in self.corrected_words:
                 new_word_manager.add_word(self.corrected_words.get(word))
             else:

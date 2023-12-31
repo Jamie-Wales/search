@@ -68,7 +68,7 @@ class DocumentParser(IParser):
         """
         from utils import DocumentProcessor
         doc_processor = DocumentProcessor()
-        content = self._read_html(path)
+        content, raw_content = self._read_html(path)
         doc_metadata = self._read_metadata(self.metadata_parser, path)
         word_manager = WordManager()
         stemmer = PorterStemmer()
@@ -79,7 +79,7 @@ class DocumentParser(IParser):
             for count, token in enumerate(tokens):
                 word = Word(token, element[1], count, stemmer, lemmar)
                 word_manager.add_word(word)
-        return Document(word_manager, doc_metadata)
+        return Document(word_manager, doc_metadata, raw_content)
 
     @staticmethod
     def _read_metadata(metadata_parser: MetadataParser, path):
@@ -138,6 +138,7 @@ class DocumentParser(IParser):
         try:
             with open(path, "rb") as f:
                 raw_content = BeautifulSoup(f.read(), features="html.parser")
+                raw_output = raw_content.find("div", id="content").getText()
                 for ele in raw_content(["script", "img", "style", "a"]):
                     ele.extract()
 
@@ -154,7 +155,7 @@ class DocumentParser(IParser):
                     ele.extract()
 
                 output = DocumentParser.get_element_texts(raw_content)
-                return output
+                return output, raw_output
 
         except FileNotFoundError:
             raise FileNotFoundError(f"The directory {path} does not exist")

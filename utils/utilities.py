@@ -1,10 +1,7 @@
 import os
 import pickle
-import sys
 from collections import defaultdict
 from typing import List, Optional, Dict
-
-from nltk import PorterStemmer, WordNetLemmatizer
 
 from engine.Vector import QueryVector
 from search_components import Document
@@ -12,36 +9,16 @@ from search_components.Word import QueryWord
 from search_components.WordManager import QueryManager
 
 
-class UserInput(object):
-    _instance: Optional["UserInput"] = None
+class UserInput:
 
-    def __init__(self):
-        self._query = None
-
-    def __new__(cls) -> "UserInput":
-        if cls._instance is None:
-            cls._instance = super(UserInput, cls).__new__(cls)
-            cls._instance._query = ""
-        return cls._instance
-
-    def get_input(self, corpus_word_manager, vector_space) -> QueryVector:
-        vec = self.process_input(corpus_word_manager, vector_space)
-        return vec
-
-    def set_input(self, input: str) -> None:
-        self._query = input
-        if self._query == "d":
-            sys.exit(0)
-
-    def process_input(self, corpus_word_manager, vector_space) -> QueryVector:
+    @staticmethod
+    def process_input(input, corpus_word_manager, vector_space, stemmar, lemmar) -> QueryVector:
         from utils import DocumentProcessor
         dp = DocumentProcessor()
-        tokens = dp.tokenise(self._query)
-        stemmer = PorterStemmer()
-        lemmar = WordNetLemmatizer()
+        tokens = dp.tokenise(input)
         query_word_manager = QueryManager()
         for token in tokens:
-            word = QueryWord(token, stemmer, lemmar)
+            word = QueryWord(token, stemmar, lemmar)
             query_word_manager.add_word(word)
 
         vec = QueryVector(corpus_word_manager, query_word_manager, "query", vector_space)

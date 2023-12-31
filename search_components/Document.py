@@ -14,6 +14,7 @@ class DocumentMetaData:
 
 
 class Document:
-    def __init__(self, word_manager: WordManager, metadata: DocumentMetaData):
+    def __init__(self, word_manager: WordManager, metadata: DocumentMetaData, raw_content):
         self.metadata = metadata
         self.word_manager = word_manager
+        self.raw_content = raw_content

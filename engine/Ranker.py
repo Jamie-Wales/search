@@ -5,9 +5,8 @@ from engine import QueryVector
 
 
 class Ranker:
-    docs = []
-
-    def tf_idf_vector(self, vec_type: str, vector_store: DocumentVectorStore, query_vec: QueryVector):
+    @staticmethod
+    def tf_idf_vector(vec_type: str, vector_store: DocumentVectorStore, query_vec: QueryVector):
         heap = []
 
         # Iterate through all document vectors, use enumerate to get an index
@@ -24,5 +23,5 @@ class Ranker:
 
         # Convert heap to a list and sort in descending order
         # Using only score and metadata for the final output
-        self.docs = sorted([(score, metadata) for score, _, metadata in heap], key=lambda x: x[0], reverse=True)
-        return self.docs
+        docs = sorted([(score, metadata) for score, _, metadata in heap], key=lambda x: x[0], reverse=True)
+        return docs

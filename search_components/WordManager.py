@@ -73,7 +73,6 @@ class CorpusWordManager(WordManager):
                     self.count[word_type][word] = self.count[word_type].get(word, 0) + 1
 
 
-
 class QueryManager:
     def __init__(self):
         self.words: Dict[str, Dict[str, int]] = {
