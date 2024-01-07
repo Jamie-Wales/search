@@ -4,7 +4,6 @@ from threading import Thread
 from typing import override, Callable
 
 import numpy
-
 from search_components.WordManager import WordManager, CorpusWordManager
 
 
@@ -12,7 +11,7 @@ class VectorData:
     def __init__(self, raw_list, intersection):
         self.raw_list = raw_list
         self.intersection = intersection
-        self.value = numpy.zeros(len(intersection))
+        self.value = {}
 
 
 class Vector(ABC):
@@ -28,9 +27,9 @@ class Vector(ABC):
         self.original_data = self._process_vector_data("original")
 
         self.weightingAlgorithm()
-        self.lemmatized_data.value = self.vec_normalise(self.lemmatized_data.value)
-        self.stemmed_data.value = self.vec_normalise(self.stemmed_data.value)
-        self.original_data.value = self.vec_normalise(self.original_data.value)
+        self.vec_normalise(self.lemmatized_data.value)
+        self.vec_normalise(self.stemmed_data.value)
+        self.vec_normalise(self.original_data.value)
 
     def _process_vector_data(self, word_type) -> VectorData:
         raw_vec = self._generate_raw_vec(self.word_manager.words[word_type],
@@ -44,14 +43,16 @@ class Vector(ABC):
         common_words = self.__getattribute__(f"{word_type}_data").intersection & vec.__getattribute__(
             f"{word_type}_data").intersection
 
-        # Create dictionaries from intersections and values
-        current_values_dict = dict(zip(self.__getattribute__(f"{word_type}_data").intersection,
-                                       self.__getattribute__(f"{word_type}_data").value))
-        passed_values_dict = dict(zip(vec.__getattribute__(f"{word_type}_data").intersection,
-                                      vec.__getattribute__(f"{word_type}_data").value))
+        current_dic = self.__getattribute__(f"{word_type}_data").value
+        passed_dic = vec.__getattribute__(
+            f"{word_type}_data").value
 
-        # Calculate the dot product for common words
-        dot_product = sum(current_values_dict.get(word, 0) * passed_values_dict.get(word, 0) for word in common_words)
+        dot_product = sum(current_dic.get(word, 0) * passed_dic.get(word, 0) for word in common_words)
+
+        if common_words:
+            for words in common_words:
+                if passed_dic.get(words) == 0.25 and current_dic.get(words) > 0:
+                    print(self.metadata)
 
         return dot_product
 
@@ -72,12 +73,12 @@ class Vector(ABC):
 
     def _weighting_for_type(self, word_type):
         data = self.__getattribute__(f"{word_type}_data")
-        for index, word in enumerate(data.intersection):
+        for word in data.intersection:
             tf = self._tf(word_type, word)
             assert (tf >= 0)
             idf = self._idf(word_type, word)
             assert (idf >= 0)
-            data.value[index] = tf * idf
+            data.value[word] = tf * idf
 
     @abstractmethod
     def _tf(self, word_type: str, word: str) -> float:
@@ -101,15 +102,11 @@ class Vector(ABC):
 
     @staticmethod
     def vec_normalise(vec):
-        output = []
-        # Normalize the sparse vector
-        norm = numpy.sqrt(sum(value ** 2 for value in vec))
+        norm = numpy.sqrt(sum(value ** 2 for value in vec.values()))
         if norm > 0:
-            for value in vec:
-                value /= norm
-                assert (value >= 0)
-                output.append(value)
-        return output
+            for word in vec:
+                vec[word] = vec[word] / norm
+                assert (vec[word] >= 0)
 
 
 class TFIDFVector(Vector):
@@ -134,11 +131,6 @@ class TFIDFVector(Vector):
             raise ValueError
 
         idf = math.log(num_documents / doc_frequency)
-
-        # Print for debugging
-        print(
-            f"Calculating IDF for word '{word}' (type: {word_type}): num_documents = {num_documents}, doc_frequency = {doc_frequency}, idf = {idf}")
-
         return idf
 
 
@@ -163,6 +155,7 @@ class TFIDFFieldVector(TFIDFVector):
             'div': 1,
             'i': 0.75,
             'b': 1.25,
+            'named entity': 3
         }
 
         for tag in tags:
@@ -201,3 +194,56 @@ class QueryVector(Vector):
     @override
     def _idf(self, word_type: str, word: str) -> int:
         return 1
+
+    def query_expansion(self, type):
+        data = self.__getattribute__(f"{type}_data")
+        words_to_add = []
+        for word in data.intersection:
+            vector_space_word = self.corpus_word_manager.get_word(type, word)
+            set_of_concurrent_words = vector_space_word.__getattribute__(f"{type}_concurrent")
+            for element in set_of_concurrent_words:
+                print(element)
+                data.value[element] = data.value.get(element, 0) + 0.25
+                words_to_add.append(element)
+
+        for word in words_to_add:
+            data.intersection.add(word)
+
+    def relevance_feedback(self, word_type: str, relevant_doc_ids: list[Vector], beta=0.75):
+        if not relevant_doc_ids:
+            return {}
+
+        # Create a copy of the words from the first document
+        first_doc_words = relevant_doc_ids[0].__getattribute__(f"{word_type}_data").intersection
+        shared_words = set(first_doc_words)
+        print(shared_words)
+
+        # Intersect with words from remaining documents to find common words
+        for doc in relevant_doc_ids[1:]:
+            doc_words = doc.__getattribute__(f"{word_type}_data").intersection
+            shared_words.intersection_update(doc_words)
+
+        final_weighting = {}
+
+        for word in shared_words:
+            total = 0
+            count = 0
+            for doc in relevant_doc_ids:
+                doc_data = doc.__getattribute__(f"{word_type}_data").value
+                ranking = doc_data.get(word, 0)
+                if ranking != 0:
+                    total += ranking
+                    count += 1
+
+            final_weighting[word] = total / count if count > 0 else 0
+
+        new_query = QueryVector(self.corpus_word_manager, self.word_manager, "", self.vector_space)
+
+        new_query_data = new_query.__getattribute__(f"{word_type}_data")
+        new_query_data.intersection.update(shared_words)
+
+        for word in final_weighting:
+            adjusted_weight = final_weighting[word] * beta
+            new_query_data.value[word] = new_query_data.value.get(word, 0) + adjusted_weight
+
+        return new_query

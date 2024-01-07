@@ -4,10 +4,10 @@ from typing import List, Optional
 
 from engine.VectorSpace import VectorSpace
 from search_components import Document
+from search_components.NamedEntityRecogniser import NamedEntityRecogniser
 from search_components.WordManager import CorpusWordManager
 
 
-# manages individual corpus details
 class Corpus:
     documents: List[Document]
     word_manager: CorpusWordManager
@@ -17,12 +17,13 @@ class Corpus:
         self.documents = []
         self.directory_path = directory_path
         self._load_documents()
+        self.ner = NamedEntityRecogniser(self.documents)
         self.word_manager = CorpusWordManager(self.documents)
         self.vector_space = VectorSpace(self.word_manager)
 
     def _load_documents(self):
-        from utils import DocumentParser
 
+        from utils.Parser import DocumentParser
         parser = DocumentParser()
         # Check if directory exists
         if not os.path.exists(self.directory_path):
@@ -48,12 +49,11 @@ class Corpus:
 
 
 class CorpusManager:
-    _instance: Optional["CorpusManager.pkl"] = None
+    _instance: Optional["CorpusManager"] = None
     raw_corpus = None
 
     def __init__(self) -> None:
-        from utils import check_and_overwrite
-
+        from utils.utilities import check_and_overwrite
         if os.path.exists("./CorpusManager.pkl"):
             file = open("./CorpusManager.pkl", "rb")
             self.raw_corpus = pickle.load(file).get_raw_corpus()

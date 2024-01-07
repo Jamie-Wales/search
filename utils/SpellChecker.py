@@ -1,6 +1,5 @@
 import numpy as np
 
-from engine import QueryVector
 from engine.VectorSpace import VectorSpace
 from search_components.Word import Word, QueryWord
 from search_components.WordManager import QueryManager, CorpusWordManager
@@ -30,12 +29,17 @@ class SpellChecker:
                 new_word_manager.add_word(QueryWord(word))
 
         if len(self.corrected_words) > 0:
+            from vec.Vector import QueryVector
             self.corrected_vector = QueryVector(self.corpus_word_manager, new_word_manager, "", self.vector_space)
 
     def find_closest_word_in_wm(self, input_word: str) -> tuple[Word | str, float | int]:
         min_distance = float('inf')
         closest_word = input_word
         for word in self.corpus_word_manager.words["original"].values():
+            if abs(len(input_word) - len(word.original)) > 2:
+                # Skip edit distance calculation if length difference is more than 2
+                continue
+
             distance = self.edit_distance(input_word, word.original)
             if distance < min_distance:
                 min_distance = distance

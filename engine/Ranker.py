@@ -1,17 +1,24 @@
+from __future__ import annotations
+
 import heapq
 
-from engine import DocumentVectorStore
-from engine import QueryVector
+from search_components.Word import NamedEntityWord
 
 
 class Ranker:
     @staticmethod
-    def tf_idf_vector(vec_type: str, vector_store: DocumentVectorStore, query_vec: QueryVector):
+    def tf_idf_vector(vec_type: str, vector_store: "DocumentVectorStore", query_vec: "QueryVector", ner_words):
         heap = []
-
         # Iterate through all document vectors, use enumerate to get an index
         for index, vec in enumerate(vector_store.document_vectors):
             score = vec.TFIDFVector.dot_product(query_vec, vec_type)
+
+            if score > 0 and len(ner_words) > 0:
+                for word in ner_words.values():
+                    check_word = vec.TFIDFVector.word_manager.words["original"].get(f"{word[0]}, {word[1]}", None)
+                    if check_word is not None and check_word.type == word[1]:
+                        score *= 2
+
 
             # Push a tuple of (score, index, metadata) onto the heap
             if score > 0:

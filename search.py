@@ -1,13 +1,18 @@
 import math
 import os
+import threading
 import tkinter as tk
 import webbrowser
+from pathlib import Path
+from tkinter import font as tkFont
+from ttkbootstrap.constants import *
+from ttkbootstrap.scrolled import ScrolledFrame
 
-import numpy
 import ttkbootstrap as ttk
+from PIL import Image, ImageTk
 
-from engine import Search
-from utils import SpellChecker
+from engine.Search import Search
+from utils.SpellChecker import SpellChecker
 
 
 def okampi25plus(self, word, term_frequency, document_frequency, metadata, field=True, sections=None):
@@ -43,150 +48,6 @@ def _get_n_docs(self, word):
     return count
 
 
-def get_word_doc_matrix(self):
-    # Initialize a dictionary where each word maps to a list of TF-IDF scores, one per document
-    word_score = {}
-    for word in self.vector_space:
-        word_score[word] = []
-    for doc in self.corpus.documents:
-        word_score[word].append(doc.vector.raw_vec.get(word))
-
-    return word_score
-
-
-def find_most_related_word(self, target_word):
-    sorted_related_words = []
-    word_arr = self.word_doc_matrix.get(target_word)
-
-    # Ensure word_arr is not None before proceeding
-    if word_arr is not None:
-        for keys in self.word_doc_matrix.keys():
-            check = self.word_doc_matrix[keys]
-            score = 0
-            # Ensure check is not None before doing dot product
-        if check is not None:
-            check = [0 if v is None else v for v in check]
-            word_arr = [0 if v is None else v for v in word_arr]
-            score += numpy.dot(check, word_arr)
-            sorted_related_words.append((keys, score))
-
-    sorted_related_words = sorted(sorted_related_words, key=lambda x: x[1], reverse=True)
-    top_5_words = [word for word, score in sorted_related_words if word != target_word][:5]
-
-    return top_5_words
-
-
-"""if __name__ == "__main__":
-    search = Search()
-    spell_checker = SpellChecker(search.corpus_manager.word_manager, search.corpus_manager.vector_space)
-    sg.theme('SystemDefault')
-
-    layout = [
-        [sg.Text("Enter a query:", font=("Futura", 18, "bold"), pad=(20, 20)),
-         sg.Input(key='-INPUT-', expand_x=True, font=("Futura", 16), pad=(20, 20)),
-         sg.Button('Search', font=("Futura", 16), pad=(20, 20), button_color=("white", "green"))],
-        [sg.Column([], key="-SPELLCHECK-", pad=(20, 20))],
-        [sg.Column([], key='-RESULTS-COLUMN-', expand_y=True, expand_x=True, pad=(20, 20))],
-        [sg.Canvas(key='-CANVAS-')],
-        [sg.Button('Quit', font=("Futura", 16), pad=(20, 20), button_color=("white", "red"))]
-    ]
-
-    window = sg.Window('Search Engine', layout, size=(1300, 900))
-    canvas_elem = window['-CANVAS-']
-    canvas = canvas_elem.Widget
-    frame = tk.Frame(canvas)
-    canvas.create_window((0, 0), window=frame, anchor='nw')
-
-    def perform_search(query):
-        row = [
-            sg.pin(
-                sg.Col([[
-                    sg.Text(f"Title: {query[1].url}", font=("Futura", 16)),
-                    sg.Text(f"Score: {query[0]}", font=("Futura", 16)),
-                    sg.Button("View", key=(f"-View-{query[1].doc_id}"), font=("Futura", 16),
-                              button_color=("white", "blue"))
-                ]], key=f"result-{query[1].doc_id}", pad=(10, 10)
-                ))
-        ]
-        return row
-
-
-    def clear_column(window, column_key):
-        for widget in window[column_key].Widget.winfo_children():
-            widget.destroy()
-
-
-    def check_user_spelling(spell_checker: SpellChecker):
-        # Enhanced styling for the spell check suggestion row
-        spell_layout = []
-        output = "Did you mean: "
-        for word in spell_checker.corrected_words.values():
-            output += f"{word.original} "
-
-        unique_key = f"-correct-{int(time())}"
-        row = [
-            sg.pin(
-                sg.Col([[
-                    sg.Text(output, font=("Futura", 16)),
-                    sg.Button("Yes", key=unique_key, font=("Futura", 16), button_color=("white", "orange"))
-                ]], pad=(10, 10)
-                ))
-        ]
-        spell_layout.append(row)
-        return spell_layout
-
-
-    # Event loop
-    while True:
-        event, values = window.read()
-        if event in (sg.WINDOW_CLOSED, 'Quit'):
-            break
-        elif event == 'Search':
-            clear_column(window, '-RESULTS-COLUMN-')
-            clear_column(window, '-SPELLCHECK-')
-            window['-CANVAS-'].update(visible=False)
-
-            search_query = values['-INPUT-']
-            elements = search.search("lemmatized", search_query)
-            spell_checker.correct_words(search.search_input.word_manager)
-            if spell_checker.corrected_vector is not None:
-                window.extend_layout(window['-SPELLCHECK-'], check_user_spelling(spell_checker))
-
-            new_layout = []
-            if len(elements) == 0:
-                new_layout.append([sg.Text("No results", font=("Futura", 16))])
-            else:
-                for element in elements:
-                    new_layout.append(perform_search(element))
-            window.extend_layout(window["-RESULTS-COLUMN-"], new_layout)
-            window.refresh()
-
-        elif event.startswith('-correct-'):
-            clear_column(window, '-RESULTS-COLUMN-')
-            clear_column(window, '-SPELLCHECK-')
-            elements = search.rerank("lemmatized", spell_checker.corrected_vector)
-            new_layout = []
-            if len(elements) == 0:
-                new_layout.append([sg.Text("No results", font=("Futura", 16))])
-            else:
-                for element in elements:
-                    new_layout.append(perform_search(element))
-
-            window.extend_layout(window["-RESULTS-COLUMN-"], new_layout)
-            window.refresh()
-
-
-        elif event.startswith('-View-'):
-            doc_id = int(event.split('-')[-1])
-            document = search.corpus_manager.get_document_by_id(doc_id)
-            print(f"Document ID: {doc_id}, Document: {document}")
-            window['-CANVAS-'].update(visible=True)
-
-    window.close()
-
-"""
-
-
 class SearchApp:
     """
     A search application built with Tkinter.
@@ -198,23 +59,55 @@ class SearchApp:
         master.title('Search Engine')
 
         self.search = Search()
-        self.spell_checker = SpellChecker(self.search.corpus_manager.word_manager,
-                                          self.search.corpus_manager.vector_space)
+        self.spell_checker = SpellChecker(self.search.corpus_manager.get_raw_corpus().word_manager,
+                                          self.search.corpus_manager.get_raw_corpus().vector_space)
 
+        self.results = None
+        self.user_feedback = False
+        self.futura_bold_large = tkFont.Font(family="Futura", size=18, weight="bold")
+        self.futura_medium = tkFont.Font(family="Futura", size=14)
+        self.futura_small = tkFont.Font(family="Futura", size=12)
         self.setup_ui()
+        self.checkbox_vars = {}
+        self.ner_words = {}
+
+    def init_relevant_feedback(self):
+        self.user_feedback = not self.user_feedback
+        self.clear_results()
+        if self.results is not None:
+            self.display_results(self.results)
+            if self.user_feedback:
+                self.rerank_button.pack(side=tk.TOP, fill=tk.X, pady=5)
+            else:
+                self.rerank_button.pack_forget()
 
     def display_results(self, results):
         """Display the search results in the results frame."""
         for elements in results:
-            # Assuming elements[1] has attributes like doc_id and url
-            result_text = f"{elements[1].doc_id} - {elements[1].url}"
-            result_label = ttk.Label(self.results_frame, text=result_text, font=("Futura", 16))
-            result_label.pack()
+            element_frame = ttk.Frame(self.results_frame)
+            element_frame.pack()
+            title_frame = ttk.Frame(self.results_frame)
+            title_frame.pack(side=tk.TOP, fill=tk.X, pady=5, padx=10)
 
-            view_button = ttk.Button(self.results_frame, text="View",
+            result_text = f"{elements[1].doc_id} - {elements[1].url} - {elements[0]}"
+            result_label = ttk.Label(title_frame, text=result_text, font=("Futura", 16))
+            result_label.pack(side=tk.LEFT)
+            body_frame = ttk.Frame(self.results_frame)
+            body_frame.pack(side=tk.TOP, fill=tk.X)
+            print(self.search.corpus_manager.get_raw_corpus().get_document_by_id(elements[1].doc_id).raw_content)
+            body_label = ttk.ScrolledText(body_frame, height=10)
+            body_label.insert(tk.END, self.search.corpus_manager.get_raw_corpus().get_document_by_id(elements[1].doc_id).raw_content)
+            body_label.pack(fill=tk.X)
+            view_button = ttk.Button(element_frame, text="View",
                                      command=lambda d=elements[1].url: self.view_document(d))
-            view_button.pack()
-            result_checkbox = ttk.Checkbutton(self.results_frame)
+            view_button.pack(side=tk.LEFT, padx=10)
+            self.results = results
+
+            if self.user_feedback:
+                var = tk.BooleanVar()  # Create a control variable for the checkbox
+                checkbox = tk.Checkbutton(element_frame, text='Mark Relevant', pady=10, variable=var)
+                checkbox.pack()
+                self.checkbox_vars[elements[1].doc_id] = var  # Map the control variable to the docID
 
     def clear_results(self):
         """Clear any existing results from the results frame."""
@@ -223,46 +116,143 @@ class SearchApp:
 
         for widget in self.spell_suggestion_frame.winfo_children():
             widget.destroy()
+        self.results_frame.pack()
+        self.checkbox_vars.clear()
 
-        self.results_frame.pack()
-        self.results_frame.pack()
     def setup_ui(self):
-        """Set up the user interface for the search application."""
+        """Set up the user interface for the search application with a scrollable canvas."""
+        # Create a canvas and a scrollbar
+
+        logo_path = Path(__file__).parent / "logo.png"
+        logo_image = Image.open(logo_path)
+        logo_photo = ImageTk.PhotoImage(logo_image)
+        self.logo_label = tk.Label(self.master, image=logo_photo)
+        self.logo_label.image = logo_photo
+        self.logo_label.pack(pady=20)
+
         # Top Frame for Search Input and Button
-        self.top_frame = tk.Frame(self.master)
-        self.top_frame.pack(pady=20)
+        self.top_frame = ttk.Frame(self.master)
+        self.top_frame.pack(side=tk.TOP, fill=tk.X, padx=20)
 
-        self.label = ttk.Label(self.top_frame, style="light", text="Enter a query:", font=("Futura", 18, "bold"))
-        self.label.pack(side=tk.LEFT, padx=10)
+        self.label = ttk.Label(self.top_frame, text="Enter a query:", font=self.futura_bold_large)
+        self.label.pack(side=tk.LEFT)
 
-        self.entry = tk.Entry(self.top_frame, font=("Futura", 16), width=50)
-        self.entry.pack(side=tk.LEFT, padx=10)
+        self.entry = ttk.Entry(self.top_frame, font=self.futura_medium)
+        self.entry.pack(padx=20, side=tk.LEFT, fill=tk.X, expand=True)
+        self.entry.bind("<KeyRelease>", self.on_key_release)
 
-        self.search_button = ttk.Button(self.top_frame, style="success", text="Search", command=self.perform_search)
-        self.search_button.pack(side=tk.LEFT, padx=10)
+        self.search_button = ttk.Button(self.top_frame, text="Search", command=self.perform_search)
+        self.search_button.pack(side=tk.LEFT)
 
-        self.spell_suggestion_frame = tk.Frame(self.master)
-        self.spell_suggestion_frame.pack(side=tk.TOP, pady=10)
-        self.results_frame = tk.Frame(self.master)
-        self.results_frame.pack(pady=10)
+        self.list_frame = ttk.Frame(self.master)
+        self.list_frame.pack(side=tk.TOP)
+        self.type_ahead = tk.Listbox(self.list_frame, width=50, height=5)
+        self.type_ahead.bind('<<ListboxSelect>>', self.on_listbox_select)
+        self.type_ahead.pack(side=tk.TOP)
+        self.spell_suggestion_frame = ttk.Frame(self.master)
+        self.spell_suggestion_frame.pack(side=tk.TOP, fill=tk.X)
 
-        self.relevance_feedback = tk.Button(self.master, text="init_mark_relevant")
+        self.relevance_feedback = ttk.Button(self.list_frame, text="Mark relevant",
+                                             command=self.init_relevant_feedback)
+        self.relevance_feedback.pack(side=tk.TOP, pady=5)
 
-        self.quit_button = tk.Button(self.master, text="Quit", font=("Futura", 16), command=self.master.quit)
-        self.quit_button.pack(pady=10)
+        self.results_frame = ScrolledFrame(self.master, autohide=True)
+        self.results_frame.pack(fill=BOTH, expand=YES)
 
+        # Rerank with Feedback Button
+        self.rerank_button = ttk.Button(self.list_frame, text="Rerank with Feedback",
+                                        command=self.rerank_with_feedback)
+
+        # Quit Button
+        self.quit_button = ttk.Button(self.master, text="Quit", command=self.master.quit)
+        self.quit_button.pack(side=tk.BOTTOM, pady=5)
+
+    def on_key_release(self, event):
+        # Cancel previous job if it's still queued
+
+        if hasattr(self, '_job'):
+            self.master.after_cancel(self._job)
+
+        # Schedule the update after a delay
+        self._job = self.master.after(5, self.update_suggestions)
+
+    def on_listbox_select(self, event):
+        """Event handler for when an item is selected in the type_ahead Listbox."""
+        # Get the index of the selected item
+        selection = event.widget.curselection()
+        if selection:
+            index = selection[0]
+            name = self.suggestions[index][0]
+            category = self.suggestions[index][1]
+            self.ner_words[name] = (name, category)
+            if self.entry == "":
+                self.entry.insert(0, f"{name} ")
+            else:
+                self.entry.insert(-1, f" {name} ")
+
+    def check_ner_words(self):
+        to_remove = []
+        for strings in self.ner_words.keys():
+            if strings not in self.entry.get():
+                to_remove.append(strings)
+
+        for remove in to_remove:
+            self.ner_words.pop(remove)
+
+    def update_suggestions(self):
+        # Clear the current list
+
+        typed_text = self.entry.get()
+        self.type_ahead.pack_forget()
+        self.check_ner_words()
+        print(self.ner_words)
+        if typed_text == "":
+            return
+        self.type_ahead.pack(side=tk.TOP)
+        self.type_ahead.delete(0, tk.END)
+
+        # Get the current entry value
+
+        # Define a function to update the Listbox from the main thread
+        def update_listbox_with_suggestions():
+            suggestions = self.search.named_entities.find_words_with_prefix(typed_text)
+            # Schedule the Listbox update in the main thread
+            self.master.after(0, lambda: self._update_listbox(suggestions))
+
+        # Start a new thread for Trie lookup and updating the Listbox
+        threading.Thread(target=update_listbox_with_suggestions).start()
+
+    def update_listbox(self, suggestions):
+        # Schedule the Listbox update in the main thread
+        root.after(0, lambda: self._update_listbox(suggestions))
+
+    def _update_listbox(self, suggestions):
+        self.type_ahead.delete(0, tk.END)
+        self.suggestions = {}
+        if len(suggestions) == 0:
+            self.type_ahead.pack_forget()
+        for index, suggestion in enumerate(suggestions):
+            self.suggestions[index] = (suggestion[0], suggestion[1])
+            self.type_ahead.insert(tk.END, f"{suggestion[0]}, Type: {suggestion[1]}")
+
+    def get_checked_documents(self):
+        """Return a list of document IDs for which the checkboxes are checked."""
+        checked_docs = [doc_id for doc_id, var in self.checkbox_vars.items() if var.get()]
+        return checked_docs
 
     def perform_search(self):
         """Perform a search operation based on the query and display results."""
         search_query = self.entry.get()
-        self.relevance_feedback.pack()
         self.clear_results()
-        results = self.search.search("lemmatized", search_query)
+        self.list_frame.pack_forget()
+        self.results = self.search.search("lemmatized", search_query, self.ner_words)
         self.spell_checker.correct_words(self.search.search_input.word_manager)
         if self.spell_checker.corrected_vector is not None:
             self.display_spell_suggestion()
-        self.display_results(results)
-
+        if len(self.results) > 0:
+            self.display_results(self.results)
+        else:
+            tk.Label(self.results_frame, text="Sorry, no results found").pack()
 
     def display_spell_suggestion(self):
         """Display the spell check suggestion as clickable text."""
@@ -270,26 +260,36 @@ class SearchApp:
         for word in self.spell_checker.corrected_words.values():
             suggestion += f"{word.original} "
 
-        suggestion_label = tk.Label(self.spell_suggestion_frame, text=suggestion, font=("Futura", 16), fg="blue",
-                                    cursor="hand1")
-        suggestion_label.pack(side=tk.LEFT)
+        suggestion_label = ttk.Label(self.spell_suggestion_frame, text=suggestion, font=("Futura", 16),
+                                     cursor="hand2")
+        suggestion_label.pack(side=tk.TOP)
         suggestion_label.bind("<Button-1>", self.on_spell_correction)
 
     def on_spell_correction(self, event=None):
         """Handle the user's response to the spell check suggestion."""
         self.entry.delete(0, tk.END)
-        results = self.search.rerank("lemmatized", self.spell_checker.corrected_vector)
+        self.results = self.search.rerank("lemmatized", self.spell_checker.corrected_vector)
         self.clear_results()
-        self.display_results(results)
+        self.display_results(self.results)
 
     def view_document(self, url):
         """Open the document in the default web browser."""
         file_path = 'file://' + os.path.realpath(url)
         webbrowser.open(file_path)
 
+    def rerank_with_feedback(self):
+        """Rerank search results based on the user's relevance feedback."""
+        checked_docs = self.get_checked_documents()
+        if checked_docs:
+            new_vec = self.search.relevance_feedback(checked_docs)
+            self.results = self.search.rerank("lemmatized", new_vec)
+            self.clear_results()
+            self.display_results(self.results)
+
 
 if __name__ == "__main__":
-    root = ttk.Window(themename="superhero")
+    root = ttk.Window(themename="cosmo")
     root.geometry('1300x900')
     app = SearchApp(root)
+
     root.mainloop()

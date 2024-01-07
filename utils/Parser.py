@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup, Comment, NavigableString
 from nltk import PorterStemmer
 from nltk import WordNetLemmatizer
 
-from search_components import Document, DocumentMetaData
+from search_components.Document import Document, DocumentMetaData
 from search_components.Word import Word
 from search_components.WordManager import WordManager
 
@@ -66,7 +66,7 @@ class DocumentParser(IParser):
         """
         Reads and parses a document from a given path.
         """
-        from utils import DocumentProcessor
+        from utils.TextProcessor import DocumentProcessor
         doc_processor = DocumentProcessor()
         content, raw_content = self._read_html(path)
         doc_metadata = self._read_metadata(self.metadata_parser, path)
@@ -77,7 +77,7 @@ class DocumentParser(IParser):
         for element in content:
             tokens = doc_processor.tokenise(element[0])
             for count, token in enumerate(tokens):
-                word = Word(token, element[1], count, stemmer, lemmar)
+                word = Word(token, element[1], stemmer, lemmar)
                 word_manager.add_word(word)
         return Document(word_manager, doc_metadata, raw_content)
 
@@ -138,7 +138,7 @@ class DocumentParser(IParser):
         try:
             with open(path, "rb") as f:
                 raw_content = BeautifulSoup(f.read(), features="html.parser")
-                raw_output = raw_content.find("div", id="content").getText()
+                raw_output = raw_content.find("div", id="content").get_text(separator=" ", strip=True)
                 for ele in raw_content(["script", "img", "style", "a"]):
                     ele.extract()
 

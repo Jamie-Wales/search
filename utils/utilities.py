@@ -1,9 +1,9 @@
+from __future__ import annotations
 import os
 import pickle
 from collections import defaultdict
 from typing import List, Optional, Dict
 
-from engine.Vector import QueryVector
 from search_components import Document
 from search_components.Word import QueryWord
 from search_components.WordManager import QueryManager
@@ -12,8 +12,8 @@ from search_components.WordManager import QueryManager
 class UserInput:
 
     @staticmethod
-    def process_input(input, corpus_word_manager, vector_space, stemmar, lemmar) -> QueryVector:
-        from utils import DocumentProcessor
+    def process_input(input, corpus_word_manager, vector_space, stemmar, lemmar) -> "QueryVector":
+        from utils.TextProcessor import DocumentProcessor
         dp = DocumentProcessor()
         tokens = dp.tokenise(input)
         query_word_manager = QueryManager()
@@ -21,6 +21,7 @@ class UserInput:
             word = QueryWord(token, stemmar, lemmar)
             query_word_manager.add_word(word)
 
+        from vec.Vector import QueryVector
         vec = QueryVector(corpus_word_manager, query_word_manager, "query", vector_space)
         return vec
 
