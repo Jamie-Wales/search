@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Type
 
 import numpy as np
+
 from utils.utilities import load, check_and_overwrite
 
 
@@ -12,9 +13,11 @@ class VectorStore:
     BM25Vector: Type["Vector"]
     BM25Field: Type["Vector"]
 
-    def __init__(self, TFIDFVector: Type["Vector"], TFIDFField: Type["Vector"]):
+    def __init__(self, TFIDFVector: Type["Vector"], TFIDFFieldVector: Type["Vector"], BM25plusVector: Type["Vector"], BM25plusFieldVector: Type["Vector"]):
         self.TFIDFVector = TFIDFVector
-        self.TFIDFField = TFIDFField
+        self.TFIDFFieldVector = TFIDFFieldVector
+        self.BM25plusVector = BM25plusVector
+        self.BM25plusFieldVector = BM25plusFieldVector
 
 
 class DocumentVectorStore:
@@ -36,13 +39,17 @@ class DocumentVectorStore:
         Generates vectors for a given document and stores them in the document_vectors dictionary.
         """
 
-        from vec.Vector import TFIDFVector, TFIDFFieldVector
+        from vec.Vector import TFIDFVector, TFIDFFieldVector, BM25plusVector, BM25plusFieldVector
         for document in corpus.documents:
             tfidf_vector = TFIDFVector(corpus.word_manager, document.word_manager, document.metadata,
                                        corpus.vector_space)
-            tfidfField_vector = TFIDFFieldVector(corpus.word_manager, document.word_manager, document.metadata,
+            tfidf_field_vector = TFIDFFieldVector(corpus.word_manager, document.word_manager, document.metadata,
                                                  corpus.vector_space)
-            vector_store = VectorStore(tfidf_vector, tfidfField_vector)
+            bm25_vec = BM25plusVector(corpus.word_manager, document.word_manager, document.metadata,
+                                            corpus.vector_space)
+            bm25_field_vec = BM25plusFieldVector(corpus.word_manager, document.word_manager, document.metadata,
+                                       corpus.vector_space)
+            vector_store = VectorStore(tfidf_vector, tfidf_field_vector, bm25_vec, bm25_field_vec)
             self.document_vectors.put(document.metadata.doc_id, vector_store)
 
         check_and_overwrite("./document-vectors.pkl", self.document_vectors)

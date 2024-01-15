@@ -27,8 +27,6 @@ class Word(IWord):
     def __init__(self, word: str, tag: str, stemmer: Optional[PorterStemmer] = None,
                  lemmer: Optional[WordNetLemmatizer] = None):
         super().__init__(word, tag)
-        self.original_concurrent = set()
-        self.stemmed_concurrent = set()
         self.lemmatized_concurrent = set()
 
     @override
@@ -47,11 +45,7 @@ class Word(IWord):
         return self.__getattribute__(f"{type}")
 
     def add_coccurrent(self, type: str, word: "Word") -> None:
-        if type == "original":
-            self.original_concurrent.add(word)
-        elif type == "stemmed":
-            self.stemmed_concurrent.add(word)
-        elif type == "lemmatized":
+        if type == "lemmatized":
             self.lemmatized_concurrent.add(word)
         else:
             raise ValueError("Invalid Type")

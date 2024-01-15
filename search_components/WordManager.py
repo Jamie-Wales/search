@@ -64,8 +64,11 @@ class CorpusWordManager(WordManager):
         super().__init__()
         self.count = {"original": {}, "stemmed": {}, "lemmatized": {}}
         self.number_of_documents = 0
+        self.docs_holding_word = {"original": {}, "stemmed": {}, "lemmatized": {}}
         self.from_document_managers(document_list)
         self.word_matrix = None
+        self.avg_doc_length = 0
+        self._avg_doc_length()
 
     def from_document_managers(self, doc_managers_list):
         for document in doc_managers_list:
@@ -83,6 +86,9 @@ class CorpusWordManager(WordManager):
             for word_type in ["original", "stemmed", "lemmatized"]:
                 for word in seen[word_type]:
                     self.count[word_type][word] = self.count[word_type].get(word, 0) + 1
+                    doc_set = self.docs_holding_word[word_type].get(word, set())
+                    doc_set.add(document.metadata.doc_id)
+                    self.docs_holding_word[word_type][word] = doc_set
 
     def generate_word_matrix(self, matrix):
         self.word_matrix = matrix
@@ -100,21 +106,28 @@ class CorpusWordManager(WordManager):
 
                 co_correntdocs = set(self.word_matrix["lemmatized"][check_word]).union(
                     self.word_matrix["lemmatized"][word])
-
+                count = 0
                 sum = 0  # Reset sum for each word
                 for co_occurring in co_correntdocs:
                     original_word = self.word_matrix['lemmatized'][check_word].get(co_occurring, 0)
                     compare_word = self.word_matrix['lemmatized'][word].get(co_occurring, 0)
                     sum += original_word * compare_word
 
-                if sum > 0:
+                    if original_word > 0 and compare_word > 0:
+                        count = count + 1
+                if sum > 0 and count > 3:
                     heapq.heappush(heap, (sum, word))
 
                 while len(heap) > 2:
                     heapq.heappop(heap)
 
             while len(heap) != 0:
-                current_word.add_coccurrent("lemmatized", heapq.heappop(heap)[1])
+                ele = heapq.heappop(heap)
+                current_word.add_coccurrent("lemmatized", ele[1])
+
+    def _avg_doc_length(self):
+        count = sum(self.count["original"].values())
+        self.avg_doc_length = count / self.number_of_documents
 
 
 class QueryManager:

@@ -79,12 +79,26 @@ class DocumentParser(IParser):
             for count, token in enumerate(tokens):
                 word = Word(token, element[1], stemmer, lemmar)
                 word_manager.add_word(word)
+
+        metadata_attributes = [
+            doc_metadata.url,
+            doc_metadata.esrb,
+            doc_metadata.publisher,
+            doc_metadata.genre,
+            doc_metadata.developer
+        ]
+        for attribute in metadata_attributes:
+            attribute = attribute.replace("/", " ")
+            attribute = attribute.replace(".", " ")
+            tokens = doc_processor.tokenise(attribute)
+            for token in tokens:
+                word = Word(token, ["metadata"], stemmer, lemmar)
+                word_manager.add_word(word)
         return Document(word_manager, doc_metadata, raw_content)
 
     @staticmethod
     def _read_metadata(metadata_parser: MetadataParser, path):
         return metadata_parser.get_metadata_for_document(path)
-
 
     @staticmethod
     def get_element_texts(element):
@@ -139,7 +153,7 @@ class DocumentParser(IParser):
             with open(path, "rb") as f:
                 raw_content = BeautifulSoup(f.read(), features="html.parser")
                 raw_output = raw_content.find("div", id="content").get_text(separator=" ", strip=True)
-                for ele in raw_content(["script", "img", "style", "a"]):
+                for ele in raw_content(["script", "img", "style"]):
                     ele.extract()
 
                 for comment in raw_content.find_all(string=lambda text: isinstance(text, Comment)):

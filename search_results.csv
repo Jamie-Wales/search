@@ -1,0 +1,481 @@
+Query,vec type,url
+Action-Adventure Games,TFIDFVector,/videogame/one-piece-grand-adventure.html
+Action-Adventure Games,TFIDFVector,/videogame/family-guy.html
+Action-Adventure Games,TFIDFVector,/videogame/grand-theft-auto-san-andreas.html
+Action-Adventure Games,TFIDFVector,/videogame/onimusha-3-demon-siege.html
+Action-Adventure Games,TFIDFVector,/videogame/grand-theft-auto-san-andreas-special-edition.html
+Action-Adventure Games,TFIDFVector,/videogame/true-crime-streets-of-la.html
+Action-Adventure Games,TFIDFVector,/videogame/the-getaway-part-2.html
+Action-Adventure Games,TFIDFVector,/videogame/lego-indiana-jones-the-videogame.html
+Action-Adventure Games,TFIDFVector,/videogame/obscure-ii.html
+Action-Adventure Games,TFIDFVector,/videogame/spider-man-3.html
+RPG Games for PlayStation,TFIDFVector,/videogame/wild-arms-another-code-f.html
+RPG Games for PlayStation,TFIDFVector,/videogame/namco-x-capcom.html
+RPG Games for PlayStation,TFIDFVector,/videogame/final-fantasy-x.html
+RPG Games for PlayStation,TFIDFVector,/videogame/level-5-new-rpg-untitled.html
+RPG Games for PlayStation,TFIDFVector,/videogame/dragon-warrior-viii.html
+RPG Games for PlayStation,TFIDFVector,/videogame/phantasy-star-universe.html
+RPG Games for PlayStation,TFIDFVector,/videogame/shadow-hearts.html
+RPG Games for PlayStation,TFIDFVector,/videogame/radiata-stories.html
+RPG Games for PlayStation,TFIDFVector,/videogame/kingdom-hearts-ii.html
+RPG Games for PlayStation,TFIDFVector,/videogame/untitled-marvel-comics-rpg.html
+The Guy Game,TFIDFVector,/videogame/family-guy.html
+The Guy Game,TFIDFVector,/videogame/the-guy-game.html
+The Guy Game,TFIDFVector,/videogame/final-fight-streetwise.html
+The Guy Game,TFIDFVector,/videogame/dragon-ball-z-sparking.html
+star-wars-battlefront,TFIDFVector,/videogame/star-wars-battlefront.html
+star-wars-battlefront,TFIDFVector,/videogame/lego-star-wars.html
+star-wars-battlefront,TFIDFVector,/videogame/star-wars-episode-iii.html
+star-wars-battlefront,TFIDFVector,/videogame/lego-star-wars-the-original-trilogy.html
+star-wars-battlefront,TFIDFVector,/videogame/chaos-wars.html
+star-wars-battlefront,TFIDFVector,/videogame/phantasy-star-universe.html
+star-wars-battlefront,TFIDFVector,/videogame/phantasy-star-universe-ambition-of-illuminus.html
+star-wars-battlefront,TFIDFVector,/videogame/god-of-war-2-divine-retribution.html
+star-wars-battlefront,TFIDFVector,/videogame/ace-combat-zero-the-belkan-war.html
+star-wars-battlefront,TFIDFVector,/videogame/god-of-war.html
+Iron Man,TFIDFVector,/videogame/iron-man-2008.html
+Iron Man,TFIDFVector,/videogame/mega-man-x-collection.html
+Iron Man,TFIDFVector,/videogame/spider-man-trilogy.html
+Iron Man,TFIDFVector,/videogame/spider-man-3.html
+Iron Man,TFIDFVector,/videogame/pac-man-world-rally.html
+Iron Man,TFIDFVector,/videogame/shadow-man-2econd-coming.html
+Iron Man,TFIDFVector,/videogame/mega-man-x8.html
+Iron Man,TFIDFVector,/videogame/guitar-hero.html
+Iron Man,TFIDFVector,/videogame/dead-to-rights.html
+Iron Man,TFIDFVector,/videogame/tekken-4.html
+James Earl Cash,TFIDFVector,/videogame/manhunt.html
+James Earl Cash,TFIDFVector,/videogame/james-bond-007-nightfire.html
+James Earl Cash,TFIDFVector,/videogame/james-bond-007-goldeneye-2.html
+James Earl Cash,TFIDFVector,/videogame/mercenaries.html
+James Earl Cash,TFIDFVector,/videogame/crazy-taxi.html
+James Earl Cash,TFIDFVector,/videogame/hitman-blood-money.html
+Crazy Taxi,TFIDFVector,/videogame/crazy-taxi.html
+Crazy Taxi,TFIDFVector,/videogame/crazy-frog-racer.html
+Crazy Taxi,TFIDFVector,/videogame/b-boy.html
+Crazy Taxi,TFIDFVector,/videogame/karaoke-revolution-party.html
+Crazy Taxi,TFIDFVector,/videogame/ape-escape-3.html
+James Bond,TFIDFVector,/videogame/james-bond-007-nightfire.html
+James Bond,TFIDFVector,/videogame/james-bond-007-goldeneye-2.html
+James Bond,TFIDFVector,/videogame/manhunt.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFVector,/videogame/the-lord-of-the-rings-the-two-towers.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFVector,/videogame/ea-sports-fight-night-round-3.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFVector,/videogame/ar-tonelico.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFVector,/videogame/ea-sports-fight-night-2004.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFVector,/videogame/phantom-kingdom.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFVector,/videogame/growlanser-generations.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFVector,/videogame/baroque.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFVector,/videogame/persona-3-fes-.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFVector,/videogame/snk-arcade-classics-volume-1.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFVector,/videogame/shadow-hearts.html
+Crime Game,TFIDFVector,/videogame/true-crime-streets-of-la.html
+Crime Game,TFIDFVector,/videogame/dead-to-rights.html
+Crime Game,TFIDFVector,/videogame/the-getaway-part-2.html
+Crime Game,TFIDFVector,/videogame/sly-2-band-of-thieves.html
+Crime Game,TFIDFVector,/videogame/starsky-hutch.html
+Crime Game,TFIDFVector,/videogame/evil-dead-regeneration.html
+Crime Game,TFIDFVector,/videogame/50-cent-bulletproof.html
+Crime Game,TFIDFVector,/videogame/lupin-the-3rd-treasure-of-the-sorcerer-king.html
+Swords and fighting,TFIDFVector,/videogame/soul-calibur-iii.html
+Swords and fighting,TFIDFVector,/videogame/dragon-ball-z-2005.html
+Swords and fighting,TFIDFVector,/videogame/virtua-fighter-4-evolution.html
+Swords and fighting,TFIDFVector,/videogame/inuyasha-feudal-combat.html
+Swords and fighting,TFIDFVector,/videogame/shaman-king-master-spirits.html
+Swords and fighting,TFIDFVector,/videogame/from-tv-animation-one-piece-grand-battle-rush.html
+Swords and fighting,TFIDFVector,/videogame/tekken-5.html
+Swords and fighting,TFIDFVector,/videogame/dragon-ball-z-budokai-tenkaichi-3-.html
+Swords and fighting,TFIDFVector,/videogame/dragon-ball-z-tenkaichi-neo.html
+Swords and fighting,TFIDFVector,/videogame/virtua-fighter-4.html
+Fun adventure with fantasy characters,TFIDFVector,/videogame/final-fantasy-x.html
+Fun adventure with fantasy characters,TFIDFVector,/videogame/eragon.html
+Fun adventure with fantasy characters,TFIDFVector,/videogame/final-fantasy-xii.html
+Fun adventure with fantasy characters,TFIDFVector,/videogame/everblue-2.html
+Fun adventure with fantasy characters,TFIDFVector,/videogame/curious-george.html
+Fun adventure with fantasy characters,TFIDFVector,/videogame/final-fantasy-vii-2006.html
+Fun adventure with fantasy characters,TFIDFVector,/videogame/grand-theft-auto-vice-city.html
+Fun adventure with fantasy characters,TFIDFVector,/videogame/gauntlet-seven-sorrows.html
+Fun adventure with fantasy characters,TFIDFVector,/videogame/one-piece-grand-adventure.html
+Fun adventure with fantasy characters,TFIDFVector,/videogame/george-of-the-jungle.html
+Super hero game marvel or DC,TFIDFVector,/videogame/untitled-marvel-comics-rpg.html
+Super hero game marvel or DC,TFIDFVector,/videogame/spider-man-trilogy.html
+Super hero game marvel or DC,TFIDFVector,/videogame/iron-man-2008.html
+Super hero game marvel or DC,TFIDFVector,/videogame/x-men-legends.html
+Super hero game marvel or DC,TFIDFVector,/videogame/justice-league-of-america.html
+Super hero game marvel or DC,TFIDFVector,/videogame/ghost-rider.html
+Super hero game marvel or DC,TFIDFVector,/videogame/guitar-hero-2.html
+Super hero game marvel or DC,TFIDFVector,/videogame/guitar-hero.html
+Super hero game marvel or DC,TFIDFVector,/videogame/sonic-heroes.html
+Super hero game marvel or DC,TFIDFVector,/videogame/naruto-narutimett-hero.html
+Final fantasy,TFIDFVector,/videogame/final-fantasy-x.html
+Final fantasy,TFIDFVector,/videogame/final-fantasy-xii.html
+Final fantasy,TFIDFVector,/videogame/final-fantasy-vii-2006.html
+Final fantasy,TFIDFVector,/videogame/final-fight-streetwise.html
+Final fantasy,TFIDFVector,/videogame/r-type-final.html
+Final fantasy,TFIDFVector,/videogame/kingdom-hearts.html
+Final fantasy,TFIDFVector,/videogame/uefa-euro-2004.html
+Final fantasy,TFIDFVector,/videogame/eragon.html
+Final fantasy,TFIDFVector,/videogame/moto-gp-3.html
+Final fantasy,TFIDFVector,/videogame/gauntlet-seven-sorrows.html
+Action-Adventure Games,TFIDFFieldVector,/videogame/one-piece-grand-adventure.html
+Action-Adventure Games,TFIDFFieldVector,/videogame/family-guy.html
+Action-Adventure Games,TFIDFFieldVector,/videogame/grand-theft-auto-san-andreas.html
+Action-Adventure Games,TFIDFFieldVector,/videogame/resident-evil-4.html
+Action-Adventure Games,TFIDFFieldVector,/videogame/true-crime-streets-of-la.html
+Action-Adventure Games,TFIDFFieldVector,/videogame/spider-man-3.html
+Action-Adventure Games,TFIDFFieldVector,/videogame/yakuza-2.html
+Action-Adventure Games,TFIDFFieldVector,/videogame/grand-theft-auto-san-andreas-special-edition.html
+Action-Adventure Games,TFIDFFieldVector,/videogame/prince-of-persia-the-sands-of-time.html
+Action-Adventure Games,TFIDFFieldVector,/videogame/the-getaway-part-2.html
+RPG Games for PlayStation,TFIDFFieldVector,/videogame/wild-arms-another-code-f.html
+RPG Games for PlayStation,TFIDFFieldVector,/videogame/final-fantasy-x.html
+RPG Games for PlayStation,TFIDFFieldVector,/videogame/namco-x-capcom.html
+RPG Games for PlayStation,TFIDFFieldVector,/videogame/level-5-new-rpg-untitled.html
+RPG Games for PlayStation,TFIDFFieldVector,/videogame/shadow-hearts.html
+RPG Games for PlayStation,TFIDFFieldVector,/videogame/kingdom-hearts-ii.html
+RPG Games for PlayStation,TFIDFFieldVector,/videogame/dragon-warrior-viii.html
+RPG Games for PlayStation,TFIDFFieldVector,/videogame/radiata-stories.html
+RPG Games for PlayStation,TFIDFFieldVector,/videogame/phantasy-star-universe.html
+RPG Games for PlayStation,TFIDFFieldVector,/videogame/disgaea-2.html
+The Guy Game,TFIDFFieldVector,/videogame/family-guy.html
+The Guy Game,TFIDFFieldVector,/videogame/the-guy-game.html
+The Guy Game,TFIDFFieldVector,/videogame/final-fight-streetwise.html
+The Guy Game,TFIDFFieldVector,/videogame/dragon-ball-z-sparking.html
+star-wars-battlefront,TFIDFFieldVector,/videogame/star-wars-battlefront.html
+star-wars-battlefront,TFIDFFieldVector,/videogame/lego-star-wars.html
+star-wars-battlefront,TFIDFFieldVector,/videogame/star-wars-episode-iii.html
+star-wars-battlefront,TFIDFFieldVector,/videogame/lego-star-wars-the-original-trilogy.html
+star-wars-battlefront,TFIDFFieldVector,/videogame/chaos-wars.html
+star-wars-battlefront,TFIDFFieldVector,/videogame/phantasy-star-universe.html
+star-wars-battlefront,TFIDFFieldVector,/videogame/phantasy-star-universe-ambition-of-illuminus.html
+star-wars-battlefront,TFIDFFieldVector,/videogame/ace-combat-zero-the-belkan-war.html
+star-wars-battlefront,TFIDFFieldVector,/videogame/god-of-war.html
+star-wars-battlefront,TFIDFFieldVector,/videogame/god-of-war-2-divine-retribution.html
+Iron Man,TFIDFFieldVector,/videogame/iron-man-2008.html
+Iron Man,TFIDFFieldVector,/videogame/mega-man-x-collection.html
+Iron Man,TFIDFFieldVector,/videogame/spider-man-trilogy.html
+Iron Man,TFIDFFieldVector,/videogame/spider-man-3.html
+Iron Man,TFIDFFieldVector,/videogame/pac-man-world-rally.html
+Iron Man,TFIDFFieldVector,/videogame/mega-man-x8.html
+Iron Man,TFIDFFieldVector,/videogame/shadow-man-2econd-coming.html
+Iron Man,TFIDFFieldVector,/videogame/guitar-hero.html
+Iron Man,TFIDFFieldVector,/videogame/dead-to-rights.html
+Iron Man,TFIDFFieldVector,/videogame/tekken-4.html
+James Earl Cash,TFIDFFieldVector,/videogame/manhunt.html
+James Earl Cash,TFIDFFieldVector,/videogame/james-bond-007-nightfire.html
+James Earl Cash,TFIDFFieldVector,/videogame/james-bond-007-goldeneye-2.html
+James Earl Cash,TFIDFFieldVector,/videogame/mercenaries.html
+James Earl Cash,TFIDFFieldVector,/videogame/crazy-taxi.html
+James Earl Cash,TFIDFFieldVector,/videogame/hitman-blood-money.html
+Crazy Taxi,TFIDFFieldVector,/videogame/crazy-taxi.html
+Crazy Taxi,TFIDFFieldVector,/videogame/crazy-frog-racer.html
+Crazy Taxi,TFIDFFieldVector,/videogame/b-boy.html
+Crazy Taxi,TFIDFFieldVector,/videogame/karaoke-revolution-party.html
+Crazy Taxi,TFIDFFieldVector,/videogame/ape-escape-3.html
+James Bond,TFIDFFieldVector,/videogame/james-bond-007-nightfire.html
+James Bond,TFIDFFieldVector,/videogame/james-bond-007-goldeneye-2.html
+James Bond,TFIDFFieldVector,/videogame/manhunt.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFFieldVector,/videogame/the-lord-of-the-rings-the-two-towers.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFFieldVector,/videogame/ea-sports-fight-night-round-3.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFFieldVector,/videogame/ea-sports-fight-night-2004.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFFieldVector,/videogame/ar-tonelico.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFFieldVector,/videogame/phantom-kingdom.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFFieldVector,/videogame/growlanser-generations.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFFieldVector,/videogame/prince-of-persia-3.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFFieldVector,/videogame/baroque.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFFieldVector,/videogame/mafia.html
+The Lord of the Rings: The Two Towers (PS2),TFIDFFieldVector,/videogame/shadow-hearts.html
+Crime Game,TFIDFFieldVector,/videogame/true-crime-streets-of-la.html
+Crime Game,TFIDFFieldVector,/videogame/dead-to-rights.html
+Crime Game,TFIDFFieldVector,/videogame/the-getaway-part-2.html
+Crime Game,TFIDFFieldVector,/videogame/sly-2-band-of-thieves.html
+Crime Game,TFIDFFieldVector,/videogame/50-cent-bulletproof.html
+Crime Game,TFIDFFieldVector,/videogame/evil-dead-regeneration.html
+Crime Game,TFIDFFieldVector,/videogame/starsky-hutch.html
+Crime Game,TFIDFFieldVector,/videogame/lupin-the-3rd-treasure-of-the-sorcerer-king.html
+Swords and fighting,TFIDFFieldVector,/videogame/soul-calibur-iii.html
+Swords and fighting,TFIDFFieldVector,/videogame/dragon-ball-z-2005.html
+Swords and fighting,TFIDFFieldVector,/videogame/tekken-5.html
+Swords and fighting,TFIDFFieldVector,/videogame/virtua-fighter-4-evolution.html
+Swords and fighting,TFIDFFieldVector,/videogame/inuyasha-feudal-combat.html
+Swords and fighting,TFIDFFieldVector,/videogame/shaman-king-master-spirits.html
+Swords and fighting,TFIDFFieldVector,/videogame/virtua-fighter-4.html
+Swords and fighting,TFIDFFieldVector,/videogame/from-tv-animation-one-piece-grand-battle-rush.html
+Swords and fighting,TFIDFFieldVector,/videogame/tekken-4.html
+Swords and fighting,TFIDFFieldVector,/videogame/mortal-kombat-armageddon.html
+Fun adventure with fantasy characters,TFIDFFieldVector,/videogame/final-fantasy-x.html
+Fun adventure with fantasy characters,TFIDFFieldVector,/videogame/eragon.html
+Fun adventure with fantasy characters,TFIDFFieldVector,/videogame/final-fantasy-xii.html
+Fun adventure with fantasy characters,TFIDFFieldVector,/videogame/final-fantasy-vii-2006.html
+Fun adventure with fantasy characters,TFIDFFieldVector,/videogame/everblue-2.html
+Fun adventure with fantasy characters,TFIDFFieldVector,/videogame/grand-theft-auto-vice-city.html
+Fun adventure with fantasy characters,TFIDFFieldVector,/videogame/curious-george.html
+Fun adventure with fantasy characters,TFIDFFieldVector,/videogame/one-piece-grand-adventure.html
+Fun adventure with fantasy characters,TFIDFFieldVector,/videogame/family-guy.html
+Fun adventure with fantasy characters,TFIDFFieldVector,/videogame/ico.html
+Super hero game marvel or DC,TFIDFFieldVector,/videogame/untitled-marvel-comics-rpg.html
+Super hero game marvel or DC,TFIDFFieldVector,/videogame/spider-man-trilogy.html
+Super hero game marvel or DC,TFIDFFieldVector,/videogame/x-men-legends.html
+Super hero game marvel or DC,TFIDFFieldVector,/videogame/justice-league-of-america.html
+Super hero game marvel or DC,TFIDFFieldVector,/videogame/iron-man-2008.html
+Super hero game marvel or DC,TFIDFFieldVector,/videogame/sonic-heroes.html
+Super hero game marvel or DC,TFIDFFieldVector,/videogame/guitar-hero-2.html
+Super hero game marvel or DC,TFIDFFieldVector,/videogame/ghost-rider.html
+Super hero game marvel or DC,TFIDFFieldVector,/videogame/guitar-hero.html
+Super hero game marvel or DC,TFIDFFieldVector,/videogame/naruto-narutimett-hero.html
+Final fantasy,TFIDFFieldVector,/videogame/final-fantasy-x.html
+Final fantasy,TFIDFFieldVector,/videogame/final-fantasy-xii.html
+Final fantasy,TFIDFFieldVector,/videogame/final-fantasy-vii-2006.html
+Final fantasy,TFIDFFieldVector,/videogame/final-fight-streetwise.html
+Final fantasy,TFIDFFieldVector,/videogame/r-type-final.html
+Final fantasy,TFIDFFieldVector,/videogame/eragon.html
+Final fantasy,TFIDFFieldVector,/videogame/uefa-euro-2004.html
+Final fantasy,TFIDFFieldVector,/videogame/kingdom-hearts.html
+Final fantasy,TFIDFFieldVector,/videogame/moto-gp-3.html
+Final fantasy,TFIDFFieldVector,/videogame/gauntlet-seven-sorrows.html
+Action-Adventure Games,BM25plusVector,/videogame/one-piece-grand-adventure.html
+Action-Adventure Games,BM25plusVector,/videogame/grand-theft-auto-san-andreas.html
+Action-Adventure Games,BM25plusVector,/videogame/family-guy.html
+Action-Adventure Games,BM25plusVector,/videogame/grand-theft-auto-san-andreas-special-edition.html
+Action-Adventure Games,BM25plusVector,/videogame/true-crime-streets-of-la.html
+Action-Adventure Games,BM25plusVector,/videogame/onimusha-3-demon-siege.html
+Action-Adventure Games,BM25plusVector,/videogame/obscure-ii.html
+Action-Adventure Games,BM25plusVector,/videogame/the-getaway-part-2.html
+Action-Adventure Games,BM25plusVector,/videogame/spider-man-3.html
+Action-Adventure Games,BM25plusVector,/videogame/prince-of-persia-the-sands-of-time.html
+RPG Games for PlayStation,BM25plusVector,/videogame/wild-arms-another-code-f.html
+RPG Games for PlayStation,BM25plusVector,/videogame/final-fantasy-x.html
+RPG Games for PlayStation,BM25plusVector,/videogame/namco-x-capcom.html
+RPG Games for PlayStation,BM25plusVector,/videogame/dragon-warrior-viii.html
+RPG Games for PlayStation,BM25plusVector,/videogame/radiata-stories.html
+RPG Games for PlayStation,BM25plusVector,/videogame/shadow-hearts.html
+RPG Games for PlayStation,BM25plusVector,/videogame/kingdom-hearts-ii.html
+RPG Games for PlayStation,BM25plusVector,/videogame/level-5-new-rpg-untitled.html
+RPG Games for PlayStation,BM25plusVector,/videogame/phantasy-star-universe.html
+RPG Games for PlayStation,BM25plusVector,/videogame/tales-of-the-abyss.html
+The Guy Game,BM25plusVector,/videogame/family-guy.html
+The Guy Game,BM25plusVector,/videogame/the-guy-game.html
+The Guy Game,BM25plusVector,/videogame/final-fight-streetwise.html
+The Guy Game,BM25plusVector,/videogame/dragon-ball-z-sparking.html
+The Guy Game,BM25plusVector,/videogame/samurai-warriors-2.html
+The Guy Game,BM25plusVector,/videogame/dynasty-warriors-4.html
+The Guy Game,BM25plusVector,/videogame/fifa-soccer-2004.html
+The Guy Game,BM25plusVector,/videogame/mega-man-x-collection.html
+The Guy Game,BM25plusVector,/videogame/from-tv-animation-one-piece-grand-battle-rush.html
+The Guy Game,BM25plusVector,/videogame/blitz-playmakers.html
+star-wars-battlefront,BM25plusVector,/videogame/star-wars-battlefront.html
+star-wars-battlefront,BM25plusVector,/videogame/star-wars-episode-iii.html
+star-wars-battlefront,BM25plusVector,/videogame/lego-star-wars.html
+star-wars-battlefront,BM25plusVector,/videogame/lego-star-wars-the-original-trilogy.html
+star-wars-battlefront,BM25plusVector,/videogame/chaos-wars.html
+star-wars-battlefront,BM25plusVector,/videogame/phantasy-star-universe.html
+star-wars-battlefront,BM25plusVector,/videogame/phantasy-star-universe-ambition-of-illuminus.html
+star-wars-battlefront,BM25plusVector,/videogame/god-of-war-2-divine-retribution.html
+star-wars-battlefront,BM25plusVector,/videogame/lego-indiana-jones-the-videogame.html
+star-wars-battlefront,BM25plusVector,/videogame/ace-combat-zero-the-belkan-war.html
+Iron Man,BM25plusVector,/videogame/iron-man-2008.html
+Iron Man,BM25plusVector,/videogame/mega-man-x-collection.html
+Iron Man,BM25plusVector,/videogame/spider-man-trilogy.html
+Iron Man,BM25plusVector,/videogame/spider-man-3.html
+Iron Man,BM25plusVector,/videogame/pac-man-world-rally.html
+Iron Man,BM25plusVector,/videogame/guitar-hero.html
+Iron Man,BM25plusVector,/videogame/shadow-man-2econd-coming.html
+Iron Man,BM25plusVector,/videogame/dead-to-rights.html
+Iron Man,BM25plusVector,/videogame/mega-man-x8.html
+Iron Man,BM25plusVector,/videogame/tekken-4.html
+James Earl Cash,BM25plusVector,/videogame/manhunt.html
+James Earl Cash,BM25plusVector,/videogame/james-bond-007-nightfire.html
+James Earl Cash,BM25plusVector,/videogame/james-bond-007-goldeneye-2.html
+James Earl Cash,BM25plusVector,/videogame/mercenaries.html
+James Earl Cash,BM25plusVector,/videogame/crazy-taxi.html
+James Earl Cash,BM25plusVector,/videogame/hitman-blood-money.html
+Crazy Taxi,BM25plusVector,/videogame/crazy-taxi.html
+Crazy Taxi,BM25plusVector,/videogame/crazy-frog-racer.html
+Crazy Taxi,BM25plusVector,/videogame/b-boy.html
+Crazy Taxi,BM25plusVector,/videogame/karaoke-revolution-party.html
+Crazy Taxi,BM25plusVector,/videogame/ape-escape-3.html
+James Bond,BM25plusVector,/videogame/james-bond-007-nightfire.html
+James Bond,BM25plusVector,/videogame/james-bond-007-goldeneye-2.html
+James Bond,BM25plusVector,/videogame/manhunt.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusVector,/videogame/the-lord-of-the-rings-the-two-towers.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusVector,/videogame/ea-sports-fight-night-2004.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusVector,/videogame/ea-sports-fight-night-round-3.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusVector,/videogame/ar-tonelico.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusVector,/videogame/growlanser-generations.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusVector,/videogame/phantom-kingdom.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusVector,/videogame/persona-3-fes-.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusVector,/videogame/baroque.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusVector,/videogame/snk-arcade-classics-volume-1.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusVector,/videogame/shadow-hearts.html
+Crime Game,BM25plusVector,/videogame/true-crime-streets-of-la.html
+Crime Game,BM25plusVector,/videogame/dead-to-rights.html
+Crime Game,BM25plusVector,/videogame/the-getaway-part-2.html
+Crime Game,BM25plusVector,/videogame/sly-2-band-of-thieves.html
+Crime Game,BM25plusVector,/videogame/50-cent-bulletproof.html
+Crime Game,BM25plusVector,/videogame/starsky-hutch.html
+Crime Game,BM25plusVector,/videogame/evil-dead-regeneration.html
+Crime Game,BM25plusVector,/videogame/lupin-the-3rd-treasure-of-the-sorcerer-king.html
+Crime Game,BM25plusVector,/videogame/dynasty-warriors-4.html
+Crime Game,BM25plusVector,/videogame/fifa-soccer-2004.html
+Swords and fighting,BM25plusVector,/videogame/soul-calibur-iii.html
+Swords and fighting,BM25plusVector,/videogame/dragon-ball-z-2005.html
+Swords and fighting,BM25plusVector,/videogame/virtua-fighter-4-evolution.html
+Swords and fighting,BM25plusVector,/videogame/inuyasha-feudal-combat.html
+Swords and fighting,BM25plusVector,/videogame/shaman-king-master-spirits.html
+Swords and fighting,BM25plusVector,/videogame/from-tv-animation-one-piece-grand-battle-rush.html
+Swords and fighting,BM25plusVector,/videogame/dragon-ball-z-budokai-tenkaichi-3-.html
+Swords and fighting,BM25plusVector,/videogame/mortal-kombat-armageddon.html
+Swords and fighting,BM25plusVector,/videogame/seiken-densetsu-project.html
+Swords and fighting,BM25plusVector,/videogame/dragon-ball-z-tenkaichi-neo.html
+Fun adventure with fantasy characters,BM25plusVector,/videogame/final-fantasy-x.html
+Fun adventure with fantasy characters,BM25plusVector,/videogame/eragon.html
+Fun adventure with fantasy characters,BM25plusVector,/videogame/curious-george.html
+Fun adventure with fantasy characters,BM25plusVector,/videogame/gauntlet-seven-sorrows.html
+Fun adventure with fantasy characters,BM25plusVector,/videogame/everblue-2.html
+Fun adventure with fantasy characters,BM25plusVector,/videogame/grand-theft-auto-vice-city.html
+Fun adventure with fantasy characters,BM25plusVector,/videogame/george-of-the-jungle.html
+Fun adventure with fantasy characters,BM25plusVector,/videogame/final-fantasy-xii.html
+Fun adventure with fantasy characters,BM25plusVector,/videogame/final-fantasy-vii-2006.html
+Fun adventure with fantasy characters,BM25plusVector,/videogame/hot-shots-tennis.html
+Super hero game marvel or DC,BM25plusVector,/videogame/untitled-marvel-comics-rpg.html
+Super hero game marvel or DC,BM25plusVector,/videogame/iron-man-2008.html
+Super hero game marvel or DC,BM25plusVector,/videogame/x-men-legends.html
+Super hero game marvel or DC,BM25plusVector,/videogame/spider-man-trilogy.html
+Super hero game marvel or DC,BM25plusVector,/videogame/justice-league-of-america.html
+Super hero game marvel or DC,BM25plusVector,/videogame/ghost-rider.html
+Super hero game marvel or DC,BM25plusVector,/videogame/guitar-hero-2.html
+Super hero game marvel or DC,BM25plusVector,/videogame/naruto-narutimett-hero.html
+Super hero game marvel or DC,BM25plusVector,/videogame/guitar-hero.html
+Super hero game marvel or DC,BM25plusVector,/videogame/snk-arcade-classics-volume-1.html
+Final fantasy,BM25plusVector,/videogame/final-fantasy-x.html
+Final fantasy,BM25plusVector,/videogame/final-fantasy-xii.html
+Final fantasy,BM25plusVector,/videogame/final-fantasy-vii-2006.html
+Final fantasy,BM25plusVector,/videogame/final-fight-streetwise.html
+Final fantasy,BM25plusVector,/videogame/r-type-final.html
+Final fantasy,BM25plusVector,/videogame/kingdom-hearts.html
+Final fantasy,BM25plusVector,/videogame/uefa-euro-2004.html
+Final fantasy,BM25plusVector,/videogame/eragon.html
+Final fantasy,BM25plusVector,/videogame/moto-gp-3.html
+Final fantasy,BM25plusVector,/videogame/gauntlet-seven-sorrows.html
+Action-Adventure Games,BM25plusFieldVector,/videogame/grand-theft-auto-san-andreas.html
+Action-Adventure Games,BM25plusFieldVector,/videogame/one-piece-grand-adventure.html
+Action-Adventure Games,BM25plusFieldVector,/videogame/family-guy.html
+Action-Adventure Games,BM25plusFieldVector,/videogame/true-crime-streets-of-la.html
+Action-Adventure Games,BM25plusFieldVector,/videogame/grand-theft-auto-san-andreas-special-edition.html
+Action-Adventure Games,BM25plusFieldVector,/videogame/prince-of-persia-the-sands-of-time.html
+Action-Adventure Games,BM25plusFieldVector,/videogame/spider-man-3.html
+Action-Adventure Games,BM25plusFieldVector,/videogame/the-getaway-part-2.html
+Action-Adventure Games,BM25plusFieldVector,/videogame/resident-evil-4.html
+Action-Adventure Games,BM25plusFieldVector,/videogame/obscure-ii.html
+RPG Games for PlayStation,BM25plusFieldVector,/videogame/wild-arms-another-code-f.html
+RPG Games for PlayStation,BM25plusFieldVector,/videogame/final-fantasy-x.html
+RPG Games for PlayStation,BM25plusFieldVector,/videogame/dragon-warrior-viii.html
+RPG Games for PlayStation,BM25plusFieldVector,/videogame/kingdom-hearts-ii.html
+RPG Games for PlayStation,BM25plusFieldVector,/videogame/namco-x-capcom.html
+RPG Games for PlayStation,BM25plusFieldVector,/videogame/radiata-stories.html
+RPG Games for PlayStation,BM25plusFieldVector,/videogame/shadow-hearts.html
+RPG Games for PlayStation,BM25plusFieldVector,/videogame/tales-of-the-abyss.html
+RPG Games for PlayStation,BM25plusFieldVector,/videogame/disgaea-2.html
+RPG Games for PlayStation,BM25plusFieldVector,/videogame/level-5-new-rpg-untitled.html
+The Guy Game,BM25plusFieldVector,/videogame/family-guy.html
+The Guy Game,BM25plusFieldVector,/videogame/the-guy-game.html
+The Guy Game,BM25plusFieldVector,/videogame/final-fight-streetwise.html
+The Guy Game,BM25plusFieldVector,/videogame/dragon-ball-z-sparking.html
+The Guy Game,BM25plusFieldVector,/videogame/grand-theft-auto-san-andreas.html
+The Guy Game,BM25plusFieldVector,/videogame/the-simpsons.html
+The Guy Game,BM25plusFieldVector,/videogame/blitz-playmakers.html
+The Guy Game,BM25plusFieldVector,/videogame/samurai-warriors-2.html
+The Guy Game,BM25plusFieldVector,/videogame/dynasty-warriors-4.html
+The Guy Game,BM25plusFieldVector,/videogame/fifa-soccer-2004.html
+star-wars-battlefront,BM25plusFieldVector,/videogame/star-wars-battlefront.html
+star-wars-battlefront,BM25plusFieldVector,/videogame/star-wars-episode-iii.html
+star-wars-battlefront,BM25plusFieldVector,/videogame/lego-star-wars.html
+star-wars-battlefront,BM25plusFieldVector,/videogame/lego-star-wars-the-original-trilogy.html
+star-wars-battlefront,BM25plusFieldVector,/videogame/chaos-wars.html
+star-wars-battlefront,BM25plusFieldVector,/videogame/phantasy-star-universe.html
+star-wars-battlefront,BM25plusFieldVector,/videogame/phantasy-star-universe-ambition-of-illuminus.html
+star-wars-battlefront,BM25plusFieldVector,/videogame/ace-combat-zero-the-belkan-war.html
+star-wars-battlefront,BM25plusFieldVector,/videogame/god-of-war.html
+star-wars-battlefront,BM25plusFieldVector,/videogame/god-of-war-2-divine-retribution.html
+Iron Man,BM25plusFieldVector,/videogame/iron-man-2008.html
+Iron Man,BM25plusFieldVector,/videogame/mega-man-x-collection.html
+Iron Man,BM25plusFieldVector,/videogame/spider-man-trilogy.html
+Iron Man,BM25plusFieldVector,/videogame/spider-man-3.html
+Iron Man,BM25plusFieldVector,/videogame/pac-man-world-rally.html
+Iron Man,BM25plusFieldVector,/videogame/shadow-man-2econd-coming.html
+Iron Man,BM25plusFieldVector,/videogame/mega-man-x8.html
+Iron Man,BM25plusFieldVector,/videogame/guitar-hero.html
+Iron Man,BM25plusFieldVector,/videogame/dead-to-rights.html
+Iron Man,BM25plusFieldVector,/videogame/tekken-4.html
+James Earl Cash,BM25plusFieldVector,/videogame/manhunt.html
+James Earl Cash,BM25plusFieldVector,/videogame/james-bond-007-nightfire.html
+James Earl Cash,BM25plusFieldVector,/videogame/james-bond-007-goldeneye-2.html
+James Earl Cash,BM25plusFieldVector,/videogame/mercenaries.html
+James Earl Cash,BM25plusFieldVector,/videogame/crazy-taxi.html
+James Earl Cash,BM25plusFieldVector,/videogame/hitman-blood-money.html
+Crazy Taxi,BM25plusFieldVector,/videogame/crazy-taxi.html
+Crazy Taxi,BM25plusFieldVector,/videogame/crazy-frog-racer.html
+Crazy Taxi,BM25plusFieldVector,/videogame/b-boy.html
+Crazy Taxi,BM25plusFieldVector,/videogame/karaoke-revolution-party.html
+Crazy Taxi,BM25plusFieldVector,/videogame/ape-escape-3.html
+James Bond,BM25plusFieldVector,/videogame/james-bond-007-nightfire.html
+James Bond,BM25plusFieldVector,/videogame/james-bond-007-goldeneye-2.html
+James Bond,BM25plusFieldVector,/videogame/manhunt.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusFieldVector,/videogame/the-lord-of-the-rings-the-two-towers.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusFieldVector,/videogame/ea-sports-fight-night-2004.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusFieldVector,/videogame/ea-sports-fight-night-round-3.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusFieldVector,/videogame/growlanser-generations.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusFieldVector,/videogame/ar-tonelico.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusFieldVector,/videogame/phantom-kingdom.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusFieldVector,/videogame/baroque.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusFieldVector,/videogame/persona-3-fes-.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusFieldVector,/videogame/snk-arcade-classics-volume-1.html
+The Lord of the Rings: The Two Towers (PS2),BM25plusFieldVector,/videogame/shadow-hearts.html
+Crime Game,BM25plusFieldVector,/videogame/true-crime-streets-of-la.html
+Crime Game,BM25plusFieldVector,/videogame/dead-to-rights.html
+Crime Game,BM25plusFieldVector,/videogame/the-getaway-part-2.html
+Crime Game,BM25plusFieldVector,/videogame/sly-2-band-of-thieves.html
+Crime Game,BM25plusFieldVector,/videogame/50-cent-bulletproof.html
+Crime Game,BM25plusFieldVector,/videogame/evil-dead-regeneration.html
+Crime Game,BM25plusFieldVector,/videogame/starsky-hutch.html
+Crime Game,BM25plusFieldVector,/videogame/lupin-the-3rd-treasure-of-the-sorcerer-king.html
+Crime Game,BM25plusFieldVector,/videogame/grand-theft-auto-san-andreas.html
+Crime Game,BM25plusFieldVector,/videogame/blitz-playmakers.html
+Swords and fighting,BM25plusFieldVector,/videogame/soul-calibur-iii.html
+Swords and fighting,BM25plusFieldVector,/videogame/dragon-ball-z-2005.html
+Swords and fighting,BM25plusFieldVector,/videogame/virtua-fighter-4-evolution.html
+Swords and fighting,BM25plusFieldVector,/videogame/inuyasha-feudal-combat.html
+Swords and fighting,BM25plusFieldVector,/videogame/shaman-king-master-spirits.html
+Swords and fighting,BM25plusFieldVector,/videogame/from-tv-animation-one-piece-grand-battle-rush.html
+Swords and fighting,BM25plusFieldVector,/videogame/street-fighter-alpha-anthology.html
+Swords and fighting,BM25plusFieldVector,/videogame/mortal-kombat-armageddon.html
+Swords and fighting,BM25plusFieldVector,/videogame/virtua-fighter-4.html
+Swords and fighting,BM25plusFieldVector,/videogame/tekken-5.html
+Fun adventure with fantasy characters,BM25plusFieldVector,/videogame/final-fantasy-x.html
+Fun adventure with fantasy characters,BM25plusFieldVector,/videogame/eragon.html
+Fun adventure with fantasy characters,BM25plusFieldVector,/videogame/grand-theft-auto-vice-city.html
+Fun adventure with fantasy characters,BM25plusFieldVector,/videogame/final-fantasy-xii.html
+Fun adventure with fantasy characters,BM25plusFieldVector,/videogame/everblue-2.html
+Fun adventure with fantasy characters,BM25plusFieldVector,/videogame/curious-george.html
+Fun adventure with fantasy characters,BM25plusFieldVector,/videogame/gauntlet-seven-sorrows.html
+Fun adventure with fantasy characters,BM25plusFieldVector,/videogame/final-fantasy-vii-2006.html
+Fun adventure with fantasy characters,BM25plusFieldVector,/videogame/george-of-the-jungle.html
+Fun adventure with fantasy characters,BM25plusFieldVector,/videogame/family-guy.html
+Super hero game marvel or DC,BM25plusFieldVector,/videogame/untitled-marvel-comics-rpg.html
+Super hero game marvel or DC,BM25plusFieldVector,/videogame/spider-man-trilogy.html
+Super hero game marvel or DC,BM25plusFieldVector,/videogame/iron-man-2008.html
+Super hero game marvel or DC,BM25plusFieldVector,/videogame/x-men-legends.html
+Super hero game marvel or DC,BM25plusFieldVector,/videogame/justice-league-of-america.html
+Super hero game marvel or DC,BM25plusFieldVector,/videogame/ghost-rider.html
+Super hero game marvel or DC,BM25plusFieldVector,/videogame/naruto-narutimett-hero.html
+Super hero game marvel or DC,BM25plusFieldVector,/videogame/guitar-hero-2.html
+Super hero game marvel or DC,BM25plusFieldVector,/videogame/guitar-hero.html
+Super hero game marvel or DC,BM25plusFieldVector,/videogame/sonic-heroes.html
+Final fantasy,BM25plusFieldVector,/videogame/final-fantasy-x.html
+Final fantasy,BM25plusFieldVector,/videogame/final-fantasy-xii.html
+Final fantasy,BM25plusFieldVector,/videogame/final-fantasy-vii-2006.html
+Final fantasy,BM25plusFieldVector,/videogame/final-fight-streetwise.html
+Final fantasy,BM25plusFieldVector,/videogame/r-type-final.html
+Final fantasy,BM25plusFieldVector,/videogame/kingdom-hearts.html
+Final fantasy,BM25plusFieldVector,/videogame/uefa-euro-2004.html
+Final fantasy,BM25plusFieldVector,/videogame/eragon.html
+Final fantasy,BM25plusFieldVector,/videogame/gauntlet-seven-sorrows.html
+Final fantasy,BM25plusFieldVector,/videogame/moto-gp-3.html

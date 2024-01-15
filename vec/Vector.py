@@ -4,6 +4,7 @@ from threading import Thread
 from typing import override, Callable
 
 import numpy
+
 from search_components.WordManager import WordManager, CorpusWordManager
 
 
@@ -48,11 +49,6 @@ class Vector(ABC):
             f"{word_type}_data").value
 
         dot_product = sum(current_dic.get(word, 0) * passed_dic.get(word, 0) for word in common_words)
-
-        if common_words:
-            for words in common_words:
-                if passed_dic.get(words) == 0.25 and current_dic.get(words) > 0:
-                    print(self.metadata)
 
         return dot_product
 
@@ -115,12 +111,13 @@ class TFIDFVector(Vector):
         super().__init__(corpus_word_manager, document_word_manager, metadata, vector_space)
 
     @override
-    def _tf(self, word_type: str, word: str) -> float:
-        frequency = self.word_manager.get_word_count(word_type, word)
-        if frequency == 0:
+    def _tf(self, word_type: str, word: str, tf=None) -> float:
+        if tf is None:
+            tf = self.word_manager.get_word_count(word_type, word)
+        if tf == 0:
             return 0
         else:
-            return math.log(frequency) + 1
+            return math.log(tf) + 1
 
     @override
     def _idf(self, word_type: str, word: str) -> float:
@@ -130,7 +127,7 @@ class TFIDFVector(Vector):
         if doc_frequency == 0:
             raise ValueError
 
-        idf = math.log(num_documents / doc_frequency)
+        idf = math.log(num_documents / doc_frequency + 1) + 1
         return idf
 
 
@@ -140,28 +137,29 @@ class TFIDFFieldVector(TFIDFVector):
         super().__init__(corpus_word_manager, document_word_manager, metadata, vector_space)
 
     @override
-    def _tf(self, word_type: str, word: str) -> float:
+    def _tf(self, word_type: str, word: str, tf=None) -> float:
         tags = self.word_manager.get_tag_and_count(word_type, word)
-        frequency = 0
         element_weightings = {
-            'meta': 3,
-            'contenttitle': 2.5,
-            'gameBioInfoText': 2.25,
-            'gameBioInfo': 1.75,
-            'gameBioHeader': 0.5,
-            'gameBioInfoHeader': 0.5,
-            'gameBioSysReq': 1.25,
-            'gameBioSysReqTitle': 0.5,
-            'div': 1,
-            'i': 0.75,
-            'b': 1.25,
-            'named entity': 3
+        'metadata': 5,
+        'meta': 3,
+        'contenttitle': 3,
+        'gameBioInfoText': 5,
+        'gameBioInfo': 1,
+        'gameBioHeader': 0.5,
+        'gameBioInfoHeader': 0.5,
+        'gameBioSysReq': 3,
+        'gameBioSysReqTitle': 0.5,
+        'div': 2,
+        'i': 0.75,
+        'strong': 1.25,
+        'b': 1.25,
+        'a': 2,
+        'named entity': 3
         }
+        tag_count_multiplier = sum(element_weightings.get(tag, 1) * count for tag, count in tags)
 
-        for tag in tags:
-            frequency = element_weightings[tag[0]] * tag[1]
-
-        return math.log(frequency + 1)
+        tf = super()._tf(word_type, word, tag_count_multiplier)
+        return tf
 
 
 class BM25plusVector(Vector):
@@ -169,17 +167,60 @@ class BM25plusVector(Vector):
                  vector_space):
         super().__init__(corpus_word_manager, document_word_manager, metadata, vector_space)
 
-    def weightingAlgorithm(self) -> None:
-        pass
+    @override
+    def _tf(self, word_type: str, word: str, tf=None) -> float:
+        if tf is None:
+            tf = self.word_manager.get_word_count(word_type, word)
+        numerator = tf * (1.2 + 1)
+        doc_length = sum(sum(tag_values.values()) for tag_values in self.word_manager.words_by_tag["original"].values())
+
+        denominator = tf + 1.2 * (1 - 0.75 + 0.75 * (doc_length / self.corpus_word_manager.avg_doc_length))
+        return numerator / denominator
+
+    @override
+    def _idf(self, word_type: str, word: str) -> float:
+        docs_holding_word = self.corpus_word_manager.docs_holding_word[word_type].get(word, 0)
+        assert (len(docs_holding_word) != 0)
+        assert (self.corpus_word_manager.number_of_documents == 399)
+        numerator = self.corpus_word_manager.number_of_documents - len(docs_holding_word) + 0.5
+        denominator = len(docs_holding_word) + 0.5
+        idf = math.log(numerator / denominator + 1)
+        assert (idf > 0)
+        return idf
 
 
-class BM25plusFieldVector(Vector):
+class BM25plusFieldVector(BM25plusVector):
     def __init__(self, corpus_word_manager: CorpusWordManager, document_word_manager: WordManager, metadata,
                  vector_space):
         super().__init__(corpus_word_manager, document_word_manager, metadata, vector_space)
 
-    def weightingAlgorithm(self) -> None:
-        pass
+    @override
+    def _tf(self, word_type: str, word: str, tf=None) -> float:
+        tags = self.word_manager.get_tag_and_count(word_type, word)
+        element_weightings = {
+            'metadata': 5,
+            'meta': 3,
+            'contenttitle': 3,
+            'gameBioInfoText': 5,
+            'gameBioInfo': 1,
+            'gameBioHeader': 0.5,
+            'gameBioInfoHeader': 0.5,
+            'gameBioSysReq': 3,
+            'gameBioSysReqTitle': 0.5,
+            'div': 2,
+            'i': 0.75,
+            'strong': 1.25,
+            'b': 1.25,
+            'a': 2,
+            'named entity': 3
+        }
+
+        # Calculate the tag count multiplier
+        tag_count_multiplier = sum(element_weightings.get(tag, 1) * count for tag, count in tags)
+
+        # Get the base TF from the superclass and apply the weighting
+        tf = super()._tf(word_type, word, tag_count_multiplier)
+        return tf
 
 
 class QueryVector(Vector):
@@ -209,20 +250,13 @@ class QueryVector(Vector):
         for word in words_to_add:
             data.intersection.add(word)
 
-    def relevance_feedback(self, word_type: str, relevant_doc_ids: list[Vector], beta=0.75):
+    def relevance_feedback(self, word_type: str, vec_type, relevant_doc_ids: list[Vector], beta=0.75):
         if not relevant_doc_ids:
             return {}
 
-        # Create a copy of the words from the first document
-        first_doc_words = relevant_doc_ids[0].__getattribute__(f"{word_type}_data").intersection
-        shared_words = set(first_doc_words)
+        shared_words = set(
+            *[element.__getattribute__(f"{word_type}_data").intersection for element in relevant_doc_ids])
         print(shared_words)
-
-        # Intersect with words from remaining documents to find common words
-        for doc in relevant_doc_ids[1:]:
-            doc_words = doc.__getattribute__(f"{word_type}_data").intersection
-            shared_words.intersection_update(doc_words)
-
         final_weighting = {}
 
         for word in shared_words:
