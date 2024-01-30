@@ -1,4 +1,3 @@
-import math
 import os
 import re
 import threading
@@ -13,65 +12,37 @@ from ttkbootstrap.constants import *
 from ttkbootstrap.scrolled import ScrolledFrame
 
 from engine.Search import Search
-from search_components.NamedEntityRecogniser import NamedEntityRecogniser
 from utils.SpellChecker import SpellChecker
-
-
-def okampi25plus(self, word, term_frequency, document_frequency, metadata, field=True, sections=None):
-    if field:
-        total_score = self.field(word, metadata, sections)
-        tf = total_score * (1.2 + 1) / (
-                total_score + 1.2 * (1 - 0.75 + 0.75 * sum(document_frequency.values()) / self.doc_length))
-        return tf
-
-
-def _avg_doc_length(self):
-    count = 0
-    sum = 0
-    for doc in self.corpus.documents:
-        sum += len(doc.document_frequency)
-        count += 1
-
-    return sum / count
-
-
-def okampi25plusidf(self, word):
-    docsHoldingN = self._get_n_docs(word)
-    top = len(self.corpus.documents) - docsHoldingN
-    idf = math.log(top + 0.5 / (docsHoldingN + 0.5))
-    return idf
-
-
-def _get_n_docs(self, word):
-    count = 0
-    for docs in self.corpus.documents:
-        if word in docs.document_frequency:
-            count += 1
-    return count
 
 
 class SearchApp:
     """
     A search application built with Tkinter.
     """
+
     def __init__(self, master):
-        """Initialize the SearchApp with a master Tkinter window."""
         self.master = master
         master.title('Search Engine')
 
         self.search = Search()
-
-        self.spell_checker = SpellChecker(self.search.corpus_manager.get_raw_corpus().word_manager,
-                                          self.search.corpus_manager.get_raw_corpus().vector_space)
+        self.named_entites = self.search.ner_words
+        self.spell_checker = SpellChecker(
+            self.search.corpus_manager.get_raw_corpus().word_manager,
+            self.search.corpus_manager.get_raw_corpus().vector_space
+        )
 
         self.results = None
         self.user_feedback = False
-        self.futura_bold_large = tkFont.Font(family="Futura", size=18, weight="bold")
-        self.futura_medium = tkFont.Font(family="Futura", size=14)
-        self.futura_small = tkFont.Font(family="Futura", size=12)
+        self.setup_fonts()
         self.setup_ui()
         self.checkbox_vars = {}
         self.ner_words = {}
+
+    def setup_fonts(self):
+        """Setting up fonts."""
+        self.futura_bold_large = tkFont.Font(family="Futura", size=18, weight="bold")
+        self.futura_medium = tkFont.Font(family="Futura", size=14)
+        self.futura_small = tkFont.Font(family="Futura", size=12)
 
     def init_relevant_feedback(self):
         self.user_feedback = not self.user_feedback
@@ -89,7 +60,8 @@ class SearchApp:
             element_frame = ttk.Frame(self.results_frame, style="light")
             element_frame.pack(side=tk.TOP, fill=tk.X, pady=5, padx=50)
             result_text = f"{elements[1].doc_id} - {elements[1].url} - {elements[0]}"
-            result_label = ttk.Label(element_frame, style="light-inverse", text=result_text, font=self.futura_bold_large)
+            result_label = ttk.Label(element_frame, style="light-inverse", text=result_text,
+                                     font=self.futura_bold_large)
             result_label.pack(side=tk.TOP)
             body_frame = ScrolledFrame(element_frame, style="light")
             body_frame.pack(side=tk.TOP, fill=tk.X, padx=10)
@@ -102,7 +74,8 @@ class SearchApp:
             # Highlight matching words in red
             body_label.tag_config("highlight", foreground="red")
             for word in elements[2]:
-                word_lower = self.search.corpus_manager.get_raw_corpus().word_manager.get_word(self.word_type.get(), word)
+                word_lower = self.search.corpus_manager.get_raw_corpus().word_manager.get_word(self.word_type.get(),
+                                                                                               word)
                 word_lower = word_lower.__getattribute__(self.word_type.get()).lower()
                 for match in re.finditer(rf"\b{re.escape(word_lower)}\b", document_text):
                     start = match.start()
@@ -112,9 +85,8 @@ class SearchApp:
                     end_index = body_label.index(f"1.0+{end}c")
                     body_label.tag_add("highlight", start_index, end_index)
 
-
             body_label.config(state=tk.DISABLED)
-            body_label.pack(side=tk.TOP, fill=X,padx=10)
+            body_label.pack(side=tk.TOP, fill=X, padx=10)
             button_frame = ttk.Frame(element_frame)
             button_frame.pack(side=TOP, pady=5)
             view_button = ttk.Button(button_frame, text="View",
@@ -139,10 +111,9 @@ class SearchApp:
         self.checkbox_vars.clear()
 
     def setup_ui(self):
-        """Set up the user interface for the search application with a scrollable canvas."""
-        # Create a canvas and a scrollbar
-
-        logo_path = Path(__file__).parent / "logo.png"
+        """Set up the user interface."""
+        # Logo setup
+        logo_path = Path(__file__).parent / "./assets/logo.png"
         logo_image = Image.open(logo_path)
         logo_photo = ImageTk.PhotoImage(logo_image)
         self.logo_label = tk.Label(self.master, image=logo_photo)
@@ -152,7 +123,46 @@ class SearchApp:
         # Top Frame for Search Input and Button
         self.top_frame = ttk.Frame(self.master)
         self.top_frame.pack(side=tk.TOP, fill=tk.X, padx=20)
+        self.setup_top_frame()
 
+        # Dropdown setup
+        self.setup_dropdown()
+
+        # List frame setup
+        self.list_frame = ttk.Frame(self.master)
+        self.list_frame.pack(side=tk.TOP)
+        self.type_ahead = tk.Listbox(self.list_frame, width=50, height=5)
+        self.type_ahead.bind('<<ListboxSelect>>', self.on_listbox_select)
+        self.type_ahead.pack(side=tk.TOP)
+
+        # Spell suggestion frame setup
+        self.spell_suggestion_frame = ttk.Frame(self.master)
+        self.spell_suggestion_frame.pack(side=tk.TOP, fill=tk.X)
+
+        # Relevance feedback and results frame setup
+        self.relevance_feedback = ttk.Button(
+            self.master, bootstyle="light-outline",
+            text="Mark relevant", command=self.init_relevant_feedback
+        )
+        self.relevance_feedback.pack(side=tk.TOP, pady=5)
+
+        self.results_frame = ScrolledFrame(self.master, autohide=False)
+        self.results_frame.pack(fill=BOTH, expand=YES)
+        # Rerank with Feedback Button
+        self.rerank_button = ttk.Button(
+            self.list_frame, bootstyle="success",
+            text="Rerank with Feedback", command=self.rerank_with_feedback
+        )
+
+        # Quit Button
+        self.quit_button = ttk.Button(
+            self.master, text="Quit", command=self.master.quit,
+            style="danger-outline"
+        )
+        self.quit_button.pack(side=tk.BOTTOM, pady=5)
+
+    def setup_top_frame(self):
+        """Setup for the top frame of the UI."""
         self.label = ttk.Label(self.top_frame, text="Enter a query:", font=self.futura_bold_large)
         self.label.pack(side=tk.LEFT)
 
@@ -160,47 +170,34 @@ class SearchApp:
         self.entry.pack(padx=20, side=tk.LEFT, fill=tk.X, expand=True)
         self.entry.bind("<KeyRelease>", self.on_key_release)
 
-        self.search_button = ttk.Button(self.top_frame, text="Search", command=self.perform_search,bootstyle="success")
+        self.search_button = ttk.Button(self.top_frame, text="Search", command=self.perform_search, bootstyle="success")
         self.search_button.pack(side=tk.LEFT)
 
+    def setup_dropdown(self):
+        """Setup for the dropdown menus."""
         self.dropdown_frame = ttk.Frame(self.master)
         self.dropdown_frame.pack(side=tk.TOP, fill=tk.X, pady=20, padx=20)
 
         self.word_type_label = ttk.Label(self.dropdown_frame, text="Select Word Type:")
         self.word_type_label.pack(side=tk.LEFT, padx=5)
 
-        self.word_type = ttk.Combobox(self.dropdown_frame, values=["original", "stemmed", "lemmatized"], state='readonly', bootstyle="info")
-        self.word_type.set("lemmatized")  # Set the default value
+        self.word_type = ttk.Combobox(
+            self.dropdown_frame, values=["original", "stemmed", "lemmatized"],
+            state='readonly', bootstyle="info"
+        )
+        self.word_type.set("lemmatized")  # Set default value
         self.word_type.pack(side=tk.LEFT, padx=5)
+
         self.vec_type_label = ttk.Label(self.dropdown_frame, text="Select weighting algorithm:")
         self.vec_type_label.pack(side=tk.LEFT, padx=5)
 
-        self.vec_type = ttk.Combobox(self.dropdown_frame, values=["TFIDFVector", "TFIDFFieldVector", "BM25plusVector", "BM25plusFieldVector"], state='readonly', bootstyle="info")
-        self.vec_type.set("BM25plusFieldVector")  # Set the default value
+        self.vec_type = ttk.Combobox(
+            self.dropdown_frame,
+            values=["TFIDFVector", "TFIDFFieldVector", "BM25plusVector", "BM25plusFieldVector"],
+            state='readonly', bootstyle="info"
+        )
+        self.vec_type.set("BM25plusFieldVector")  # Set default value
         self.vec_type.pack(side=tk.LEFT, padx=5)
-
-        self.list_frame = ttk.Frame(self.master)
-        self.list_frame.pack(side=tk.TOP)
-        self.type_ahead = tk.Listbox(self.list_frame, width=50, height=5)
-        self.type_ahead.bind('<<ListboxSelect>>', self.on_listbox_select)
-        self.type_ahead.pack(side=tk.TOP)
-        self.spell_suggestion_frame = ttk.Frame(self.master)
-        self.spell_suggestion_frame.pack(side=tk.TOP, fill=tk.X)
-
-        self.relevance_feedback = ttk.Button(self.master, bootstyle="light-outline", text="Mark relevant",
-                                             command=self.init_relevant_feedback)
-        self.relevance_feedback.pack(side=tk.TOP, pady=5)
-
-        self.results_frame = ScrolledFrame(self.master, autohide=False)
-        self.results_frame.pack(fill=BOTH, expand=YES)
-
-        # Rerank with Feedback Button
-        self.rerank_button = ttk.Button(self.list_frame, bootstyle="success", text="Rerank with Feedback",
-                                        command=self.rerank_with_feedback)
-
-        # Quit Button
-        self.quit_button = ttk.Button(self.master, text="Quit", command=self.master.quit, style="danger-outline")
-        self.quit_button.pack(side=tk.BOTTOM, pady=5)
 
     def on_key_release(self, event):
         # Cancel previous job if it's still queued
@@ -243,9 +240,8 @@ class SearchApp:
         self.type_ahead.pack(side=tk.TOP)
         self.type_ahead.delete(0, tk.END)
 
-
         def update_listbox_with_suggestions():
-            suggestions = self.search.named_entites.find_words_with_prefix(typed_text)
+            suggestions = self.search.ner_words.find_words_with_prefix(typed_text)
             # Schedule the Listbox update in the main thread
             self.master.after(0, lambda: self._update_listbox(suggestions))
 
@@ -292,7 +288,8 @@ class SearchApp:
         for word in self.spell_checker.corrected_words.values():
             suggestion += f"{word.original} "
 
-        suggestion_label = ttk.Label(self.spell_suggestion_frame, text=suggestion, font=self.futura_bold_large, style="danger-inverse",
+        suggestion_label = ttk.Label(self.spell_suggestion_frame, text=suggestion, font=self.futura_bold_large,
+                                     style="danger-inverse",
                                      cursor="hand2")
         suggestion_label.pack(side=tk.TOP)
         suggestion_label.bind("<Button-1>", self.on_spell_correction)
@@ -300,7 +297,8 @@ class SearchApp:
     def on_spell_correction(self, event=None):
         """Handle the user's response to the spell check suggestion."""
         self.entry.delete(0, tk.END)
-        self.results = self.search.rerank(self.word_type.get(), self.vec_type.get(), self.spell_checker.corrected_vector)
+        self.results = self.search.rerank(self.word_type.get(), self.vec_type.get(),
+                                          self.spell_checker.corrected_vector)
         self.clear_results()
         self.display_results(self.results)
 

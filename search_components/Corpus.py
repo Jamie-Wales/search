@@ -8,6 +8,7 @@ from search_components.WordManager import CorpusWordManager
 
 
 class Corpus:
+    """Class representing the entire collection"""
     documents: List[Document]
     word_manager: CorpusWordManager
     vector_space: VectorSpace
@@ -46,18 +47,20 @@ class Corpus:
 
 
 class CorpusManager:
+    """Class representing management of corpus we should only have one hence singleton"""
     _instance: Optional["CorpusManager"] = None
     raw_corpus = None
 
     def __init__(self) -> None:
         from utils.utilities import check_and_overwrite
-        if os.path.exists("./CorpusManager.pkl"):
-            file = open("./CorpusManager.pkl", "rb")
+        if os.path.exists("./pklfiles/CorpusManager.pkl"):
+            file = open("./pklfiles/CorpusManager.pkl", "rb")
             self.raw_corpus = pickle.load(file).get_raw_corpus()
 
         else:
             self.raw_corpus = Corpus("./dataset/videogame")
-            check_and_overwrite("./CorpusManager.pkl", self)
+            check_and_overwrite("./pklfiles/CorpusManager.pkl", self)
+
 
     @classmethod
     def get_instance(cls) -> "CorpusManager":

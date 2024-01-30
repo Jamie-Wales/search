@@ -5,7 +5,6 @@ from engine.Search import Search
 import pandas as pd
 import matplotlib.pyplot as plt
 search_obj = Search()
-# And a list of queries
 vec_type = ["DocID", "TFIDFVectorSum", "TFIDFFieldVectorSum", "BM25plusVectorSum", "BM25plusFieldVectorSum"]
 
 if True:
@@ -31,16 +30,13 @@ if True:
             ])
 df = pd.read_csv("doc_vec.csv")
 
-# Creating scatter plots
 plt.figure(figsize=(12, 9))
 
-# Plotting all vector types on the same chart
 plt.scatter(df['DocID'], df['TFIDFVectorSum'], color='#274666', label='TFIDFVectorSum')
 plt.scatter(df['DocID'], df['TFIDFFieldVectorSum'], color='#143C3C', label='TFIDFFieldVectorSum')
 plt.scatter(df['DocID'], df['BM25plusVectorSum'], color='#FF3131', label='BM25plusVectorSum')
 plt.scatter(df['DocID'], df['BM25plusFieldVectorSum'], color='purple', label='BM25plusFieldVectorSum')
 
-# Calculating and plotting average lines
 avg_TFIDFVectorSum = df['TFIDFVectorSum'].mean()
 avg_TFIDFFieldVectorSum = df['TFIDFFieldVectorSum'].mean()
 avg_BM25plusVectorSum = df['BM25plusVectorSum'].mean()
@@ -74,7 +70,6 @@ queries = [
     "Final fantasy"
 ]
 
-# Word types to test
 
 df =pd.read_csv("search_results.csv")
 
@@ -82,7 +77,6 @@ df =pd.read_csv("search_results.csv")
 
 grouped = df.groupby(['Query', 'vec type'])
 
-# Function to get unique URLs for each group
 def get_unique_urls(group):
     return set(group['url'])
 
@@ -91,17 +85,12 @@ unique_urls = {}
 for name, group in grouped:
     unique_urls[name] = set(group['url'])
 
-# Apply the function to each group
-# Initialize a dictionary to store URLs unique to each vectype
 unique_urls_per_vectype = {}
 
 for (query, vectype), urls in unique_urls.items():
     other_vectypes = {vt for (q, vt) in unique_urls if q == query and vt != vectype}
-
-    # Initialize unique URLs for this vectype
     unique_urls_per_vectype[(query, vectype)] = urls.copy()
 
-    # Remove URLs that appear in other vectypes
     for other_vectype in other_vectypes:
         unique_urls_per_vectype[(query, vectype)] -= unique_urls[(query, other_vectype)]
 

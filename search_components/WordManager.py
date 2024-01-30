@@ -6,7 +6,7 @@ from search_components.Word import NamedEntityWord
 
 
 class WordManager:
-
+    """General class for handling the management of words"""
     def __init__(self):
         self.words_by_tag: Dict[str, Dict[str, Dict[str, int]]] = {}
         self.words: Dict[str, Dict[str, Type[Word]]] = {
@@ -16,6 +16,7 @@ class WordManager:
         }
 
     def add_word(self, word: Type[Word]) -> None:
+        """add words and their processed types to the dictionary"""
         word_types = [('original', word.original), ('stemmed', word.stemmed), ('lemmatized', word.lemmatized)]
 
         for word_type, word_form in word_types:
@@ -60,6 +61,7 @@ class WordManager:
 
 
 class CorpusWordManager(WordManager):
+    """Sub class for the specific elements of a Corpus's word manager i.e the vector space"""
     def __init__(self, document_list):
         super().__init__()
         self.count = {"original": {}, "stemmed": {}, "lemmatized": {}}
@@ -94,7 +96,7 @@ class CorpusWordManager(WordManager):
         self.word_matrix = matrix
 
     def generate_concurrent_words(self):
-        lemmatized_keys = list(self.word_matrix["lemmatized"].keys())
+        lemmatized_keys = list(self.word_matrix.keys())
 
         for i, check_word in enumerate(lemmatized_keys):
             current_word = self.get_word("lemmatized", check_word)
@@ -104,13 +106,13 @@ class CorpusWordManager(WordManager):
             for j in range(i + 1, len(lemmatized_keys)):
                 word = lemmatized_keys[j]
 
-                co_correntdocs = set(self.word_matrix["lemmatized"][check_word]).union(
-                    self.word_matrix["lemmatized"][word])
+                co_correntdocs = set(self.word_matrix[check_word]).union(
+                    self.word_matrix[word])
                 count = 0
                 sum = 0  # Reset sum for each word
                 for co_occurring in co_correntdocs:
-                    original_word = self.word_matrix['lemmatized'][check_word].get(co_occurring, 0)
-                    compare_word = self.word_matrix['lemmatized'][word].get(co_occurring, 0)
+                    original_word = self.word_matrix[check_word].get(co_occurring, 0)
+                    compare_word = self.word_matrix[word].get(co_occurring, 0)
                     sum += original_word * compare_word
 
                     if original_word > 0 and compare_word > 0:
@@ -123,7 +125,7 @@ class CorpusWordManager(WordManager):
 
             while len(heap) != 0:
                 ele = heapq.heappop(heap)
-                current_word.add_coccurrent("lemmatized", ele[1])
+                current_word.add_coccurrent(ele[1])
 
     def _avg_doc_length(self):
         count = sum(self.count["original"].values())

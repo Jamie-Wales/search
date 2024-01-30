@@ -1,5 +1,4 @@
 from nltk import WordNetLemmatizer, PorterStemmer
-
 from engine.Ranker import Ranker
 from search_components.Corpus import CorpusManager
 from search_components.NamedEntityRecogniser import NamedEntityRecogniser
@@ -8,14 +7,19 @@ from vec.DocumentVectorStore import DocumentVectorStore
 
 
 class Search:
-    def __init__(self):
+    """Our main search engine class"""
 
+    def __init__(self):
         self.corpus_manager = CorpusManager()
         self.document_vector_store = DocumentVectorStore()
-        self.named_entites = NamedEntityRecogniser(self.corpus_manager.get_raw_corpus().documents)
-        check_and_overwrite("CorpusManager.pkl", self.corpus_manager)
+        raw_corp = self.corpus_manager.get_raw_corpus()
+        self.ner_words = NamedEntityRecogniser(raw_corp)
+        self.corpus_manager.raw_corpus = raw_corp
+        check_and_overwrite("./pklfiles/CorpusManager.pkl", self.corpus_manager)
+
         if self.document_vector_store.need_vector_generation:
             self.document_vector_store.generate_vectors(self.corpus_manager.get_raw_corpus())
+
 
         self.spellVec = None
         self.lemmar = WordNetLemmatizer()
@@ -43,4 +47,3 @@ class Search:
             for id in relevant_document_id:
                 relevant_docs.append(self.document_vector_store.get_vector(id).__getattribute__(vec_type))
                 return self.search_input.relevance_feedback(word_type, vec_type, relevant_docs)
-

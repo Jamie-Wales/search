@@ -4,8 +4,10 @@ import heapq
 
 
 class Ranker:
+    """Ranks our documents"""
     @staticmethod
-    def tf_idf_vector(word_type: str, vec_type: str, vector_store: "DocumentVectorStore", query_vec: "QueryVector", ner_words):
+    def tf_idf_vector(word_type: str, vec_type: str, vector_store: "DocumentVectorStore", query_vec: "QueryVector",
+                      ner_words):
         heap = []
         for index, vec in enumerate(vector_store.document_vectors):
             vector = vec.__getattribute__(vec_type)

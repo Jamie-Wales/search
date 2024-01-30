@@ -20,12 +20,6 @@ class IParser(ABC):
     def parse(self, data: Any) -> Any:
         """
         Parse the provided data and return the parsed result.
-
-        Parameters:
-        - data (Any): The data to parse.
-
-        Returns:
-        - Any: The parsed result.
         """
         pass
 
@@ -133,12 +127,12 @@ class DocumentParser(IParser):
         children = element.findChildren(recursive=False)
 
         if not children:
-            # If there are no children, this is a leaf node, so capture its text
+            # If there are no children, this is a leaf node so get it's text
             element_class = element.get('class') or [element.name]
             element_text = element.get_text(separator=' ')
             output.append((element_text, element_class))
         else:
-            # If there are children, process each of them
+            # there are children process them
             for child in children:
                 output.extend(DocumentParser.process_children(child))
 
@@ -147,7 +141,7 @@ class DocumentParser(IParser):
     @staticmethod
     def _read_html(path: str):
         """
-        Reads the content from the given path and returns the raw and text content.
+        Reads the content from the given path and returns the raw and text content, removes fields that are not required
         """
         try:
             with open(path, "rb") as f:

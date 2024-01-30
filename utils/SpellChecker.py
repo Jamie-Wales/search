@@ -6,6 +6,8 @@ from search_components.WordManager import QueryManager, CorpusWordManager
 
 
 class SpellChecker:
+    """Application spell checker class"""
+
     def __init__(self, corpus_word_manager: CorpusWordManager, vector_space: VectorSpace):
         self.corpus_word_manager = corpus_word_manager
         self.vector_space = vector_space
@@ -13,6 +15,7 @@ class SpellChecker:
         self.corrected_vector = None
 
     def correct_words(self, input: QueryManager) -> None:
+        """Check vec space for correct words"""
         self.corrected_words.clear()
         self.corrected_vector = None
         for word in input.words["original"].keys():
@@ -33,6 +36,7 @@ class SpellChecker:
             self.corrected_vector = QueryVector(self.corpus_word_manager, new_word_manager, "", self.vector_space)
 
     def find_closest_word_in_wm(self, input_word: str) -> tuple[Word | str, float | int]:
+        """find closest word using edit distance"""
         min_distance = float('inf')
         closest_word = input_word
         for word in self.corpus_word_manager.words["original"].values():
@@ -48,6 +52,7 @@ class SpellChecker:
 
     @staticmethod
     def edit_distance(s1: str, s2: str) -> int:
+        """Standard dp edit distance but some optimisations as we can skip any word above 3"""
         s1 = ' ' + s1
         s2 = ' ' + s2
 

@@ -1,18 +1,18 @@
 from __future__ import annotations
+
 import os
 import pickle
-from collections import defaultdict
-from typing import List, Optional, Dict
 
-from search_components import Document
 from search_components.Word import QueryWord
 from search_components.WordManager import QueryManager
 
 
 class UserInput:
+    """Class that handles turning input into query vector"""
 
     @staticmethod
     def process_input(input, corpus_word_manager, vector_space, stemmar, lemmar) -> "QueryVector":
+        """Tokenises the input and turns into vector representation"""
         from utils.TextProcessor import DocumentProcessor
         dp = DocumentProcessor()
         tokens = dp.tokenise(input)
@@ -50,15 +50,3 @@ def load(url):
             return pickle.load(f)
     except (FileNotFoundError, EOFError, pickle.UnpicklingError):
         return None
-
-
-def list_factory() -> list:
-    return []
-
-
-def inner_dict_factory() -> Dict[int, List[int]]:
-    return defaultdict(list_factory)
-
-
-def sort_documents(document_a: Document, document_b: Document):
-    return document_a.metadata.doc_id < document_b.metadata.doc_id

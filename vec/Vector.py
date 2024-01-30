@@ -9,6 +9,8 @@ from search_components.WordManager import WordManager, CorpusWordManager
 
 
 class VectorData:
+    """Internals of a vector, the sparse vector, the intersection of words with vectorspace and word-value dictionary"""
+
     def __init__(self, raw_list, intersection):
         self.raw_list = raw_list
         self.intersection = intersection
@@ -16,6 +18,8 @@ class VectorData:
 
 
 class Vector(ABC):
+    """Abstract base clase that handles default functionality shared across vectors shared across document vectors"""
+
     def __init__(self, corpus_word_manager: CorpusWordManager, word_manager: WordManager, metadata,
                  vector_space):
         self.metadata = metadata
@@ -33,6 +37,7 @@ class Vector(ABC):
         self.vec_normalise(self.original_data.value)
 
     def _process_vector_data(self, word_type) -> VectorData:
+        """Vector set up method"""
         raw_vec = self._generate_raw_vec(self.word_manager.words[word_type],
                                          self.vector_space.__getattribute__(f"{word_type}_vectorspace"))
         intersection = self._getIntersection(raw_vec, self.vector_space.__getattribute__(f"{word_type}_vectorspace"))
@@ -40,7 +45,7 @@ class Vector(ABC):
         return vector_data
 
     def dot_product(self, vec: 'Vector', word_type) -> float:
-        # Intersection of words in both vectors
+        """Compute the dot product by constructing smaller vector space with set intersection"""
         common_words = self.__getattribute__(f"{word_type}_data").intersection & vec.__getattribute__(
             f"{word_type}_data").intersection
 
@@ -54,6 +59,8 @@ class Vector(ABC):
 
     @staticmethod
     def parallel_weighting(weighting_function: Callable, *args):
+        """Due to different NLP types this work is split among threads"""
+
         threads = []
         for word_type in ['lemmatized', 'stemmed', 'original']:
             # Create a process for each word type
@@ -78,19 +85,23 @@ class Vector(ABC):
 
     @abstractmethod
     def _tf(self, word_type: str, word: str) -> float:
+        """Abstract method each vector type must implement"""
         pass
 
     @abstractmethod
     def _idf(self, word_type: str, word: str) -> float:
+        """Abstract method each vector type must implement"""
         pass
 
     @staticmethod
     def _generate_raw_vec(word_list, vector_space_type):
+        """Helper vector method"""
         raw_vec = numpy.array([word if word_list.get(word) else 0 for word in vector_space_type])
         return raw_vec
 
     @staticmethod
     def _getIntersection(raw_vec, vector_space_type):
+        """Helper vector method"""
         vector_space_set = set(vector_space_type)
         raw_vec_set = set(raw_vec)
         intersection = vector_space_set.intersection(raw_vec_set)
@@ -98,6 +109,7 @@ class Vector(ABC):
 
     @staticmethod
     def vec_normalise(vec):
+        """Unit vector normalisation"""
         norm = numpy.sqrt(sum(value ** 2 for value in vec.values()))
         if norm > 0:
             for word in vec:
@@ -112,6 +124,7 @@ class TFIDFVector(Vector):
 
     @override
     def _tf(self, word_type: str, word: str, tf=None) -> float:
+        """TF IDF implementation of tf, if TF is passed this is being called by a sub-class"""
         if tf is None:
             tf = self.word_manager.get_word_count(word_type, word)
         if tf == 0:
@@ -121,7 +134,8 @@ class TFIDFVector(Vector):
 
     @override
     def _idf(self, word_type: str, word: str) -> float:
-        # Retrieve the number of documents and document frequency of the word
+        """Smoothed idf implementation, given this is called when vectorising throws exception if doc freq is 0
+        as document must exist """
         num_documents = self.corpus_word_manager.number_of_documents
         doc_frequency = self.corpus_word_manager.count[word_type].get(word, 0)
         if doc_frequency == 0:
@@ -138,23 +152,24 @@ class TFIDFFieldVector(TFIDFVector):
 
     @override
     def _tf(self, word_type: str, word: str, tf=None) -> float:
+        """Calculates tag multiplier and passes to superclass implementation of tf"""
         tags = self.word_manager.get_tag_and_count(word_type, word)
         element_weightings = {
-        'metadata': 5,
-        'meta': 3,
-        'contenttitle': 3,
-        'gameBioInfoText': 5,
-        'gameBioInfo': 1,
-        'gameBioHeader': 0.5,
-        'gameBioInfoHeader': 0.5,
-        'gameBioSysReq': 3,
-        'gameBioSysReqTitle': 0.5,
-        'div': 2,
-        'i': 0.75,
-        'strong': 1.25,
-        'b': 1.25,
-        'a': 2,
-        'named entity': 3
+            'metadata': 5,
+            'meta': 3,
+            'contenttitle': 3,
+            'gameBioInfoText': 5,
+            'gameBioInfo': 1,
+            'gameBioHeader': 0.5,
+            'gameBioInfoHeader': 0.5,
+            'gameBioSysReq': 3,
+            'gameBioSysReqTitle': 0.5,
+            'div': 2,
+            'i': 0.75,
+            'strong': 1.25,
+            'b': 1.25,
+            'a': 2,
+            'named entity': 3
         }
         tag_count_multiplier = sum(element_weightings.get(tag, 1) * count for tag, count in tags)
 
@@ -196,6 +211,7 @@ class BM25plusFieldVector(BM25plusVector):
 
     @override
     def _tf(self, word_type: str, word: str, tf=None) -> float:
+        """Calculates tag multiplier and passes to superclass implementation of tf"""
         tags = self.word_manager.get_tag_and_count(word_type, word)
         element_weightings = {
             'metadata': 5,
@@ -218,7 +234,7 @@ class BM25plusFieldVector(BM25plusVector):
         # Calculate the tag count multiplier
         tag_count_multiplier = sum(element_weightings.get(tag, 1) * count for tag, count in tags)
 
-        # Get the base TF from the superclass and apply the weighting
+        # Pass tf to super class implementation
         tf = super()._tf(word_type, word, tag_count_multiplier)
         return tf
 
@@ -234,6 +250,7 @@ class QueryVector(Vector):
 
     @override
     def _idf(self, word_type: str, word: str) -> int:
+        """idf is not required for query vector"""
         return 1
 
     def query_expansion(self, type):
@@ -241,10 +258,9 @@ class QueryVector(Vector):
         words_to_add = []
         for word in data.intersection:
             vector_space_word = self.corpus_word_manager.get_word(type, word)
-            set_of_concurrent_words = vector_space_word.__getattribute__(f"{type}_concurrent")
+            set_of_concurrent_words = vector_space_word.lemmatized_concurrent
             for element in set_of_concurrent_words:
-                print(element)
-                data.value[element] = data.value.get(element, 0) + 0.25
+                data.value[element] = data.value.get(element, 0) + 0.15
                 words_to_add.append(element)
 
         for word in words_to_add:

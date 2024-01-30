@@ -5,8 +5,10 @@ from nltk import word_tokenize
 
 
 class DocumentProcessor:
+    """Class for various textual processing methods"""
     @staticmethod
     def remove_punctuation(text: str) -> str:
+        """Remove punctuation - are spaces due to urls and all other punc is '' """
         text = text.replace('-', ' ')
         translator = str.maketrans('', '', string.punctuation)
         return text.translate(translator)
